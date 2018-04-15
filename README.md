@@ -409,3 +409,79 @@ git add -A
 git commit -m "Improve the board squares"
 git push
 ```
+
+## Clean up and refactoring
+
+We can improve this a bit. Let's do our first real refactor.
+
+First, we can use Javascript's [destructuring assignment](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment) feature to avoid having to say `props.` everywhere. Take our `src/components/Square/index.js` file. Isn't this cleaner?
+
+```javascript
+import React from 'react'
+import styled from 'styled-components'
+
+const StyledSquare = styled.div`
+  border-color: hsla(0, 0%, 0%, 0.2);
+  border-style: solid;
+  border-width: 0 ${({ index }) => (index % 3 === 2 ? 0 : '2px')}
+    ${({ index }) => (index < 6 ? '2px' : 0)} 0;
+  color: ${({ player }) => (player === 'x' ? 'hsla(6, 59%, 50%, 1)' : 'hsla(145, 63%, 32%, 1)')};
+  font-size: 16vh;
+  font-weight: bold;
+  line-height: 20vh;
+  text-align: center;
+  text-transform: uppercase;
+`
+
+export default function Square ({ index, player }) {
+  return (
+    <StyledSquare index={index} player={player}>
+      {player}
+    </StyledSquare>
+  )
+}
+```
+
+We can also generate our board squares instead of hand coding them. This will come in handy later when we want to actually change them as each player plays.
+
+To do this, we'll use a [ramda](http://ramdajs.com/) function.
+
+The [times](http://ramdajs.com/repl/?v=0.25.0#?times%28i%20%3D%3E%20%60This%20is%20Square%20%23%24%7Bi%7D%60%2C%209%29) function takes a function and an integer _n_, and returns an array of length _n_ in which each item is created by calling the function, which is passed the index of that cell in the array. So the first cell, the function is called with 0, the second cell it is called with 1, etc.
+
+Let's use this in our `src/components/App/index.js` file to generate our board. We'll use an even/odd function to alternate between player X and player O as we create the squares:
+
+```javascript
+import React from 'react'
+import styled from 'styled-components'
+import { times } from 'ramda'
+
+import { Board, Square } from '../'
+
+const makeSquares = () =>
+  times(
+    idx => <Square key={idx} index={idx} player={idx % 2 === 0 ? 'x' : 'o'} />,
+    9
+  )
+
+const StyledApp = styled.div`
+  display: grid;
+  font-family: 'Verdana', sans-serif;
+  grid-template-areas: 'board';
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+`
+
+export default function App () {
+  return (
+    <StyledApp>
+      <Board>
+        {makeSquares()}
+      </Board>
+    </StyledApp>
+  )
+}
+```
+
+Later, we'll extend this so that it handles our moves as they occur (and makes each cell clickable). But for now, this is enough. If you check your page, you should see that nothing has changed. But change the `idx % 2 === 0` above to `idx % 2 === 1` and you should see the X's and O's swap positions. (Then change it back&mdash;we're goint to make a rule that the first player is always X. That's makes things simpler.)
