@@ -207,3 +207,95 @@ git add -A
 git commit -m "Add CSS grid board with styled-components"
 git push
 ```
+
+### Now for the Squares
+
+OK, let's add our Square component now. First, create a `src/components/Square` folder and a `src/components/Square/index.js` file in it. Then add this code:
+
+```javascript
+import React from 'react'
+import styled from 'styled-components'
+
+const StyledSquare = styled.div`
+  border-color: hsla(0, 0%, 0%, 0.2);
+  border-style: solid;
+  border-width: 2px;
+  color: gray;
+  font-size: 16vh;
+  font-weight: bold;
+  line-height: 20vh;
+  text-align: center;
+  text-transform: uppercase;
+`
+
+export default function Square (props) {
+  return (
+    <StyledSquare index={props.index} player={props.player}>
+      {props.player}
+    </StyledSquare>
+  )
+}
+```
+
+Here we've imported React because we're using JSX. Our `Square` component uses the `StyledSquare` component. This is so that we can pass the player in as a prop, and also pass it in as the "children" of the `StyledSquare`. That will add it to our div as a text element (the innerHTML of our div).
+
+Let's see it in action and we'll see how it works, then we'll extend it a little.
+
+First, add it to `src/components/index.js`:
+
+```javascript
+import App from './App'
+import Board from './Board'
+import Square from './Square'
+
+export { App, Board, Square }
+```
+.
+Then we'll use it in our `src/components/App/index.js` file. We'll add in some temporary fake plays, too.
+
+```javascript
+import React from 'react'
+import styled from 'styled-components'
+
+import { Board, Square } from '../'
+
+const StyledApp = styled.div`
+  display: grid;
+  font-family: 'Verdana', sans-serif;
+  grid-template-areas: 'board';
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+`
+
+export default function App () {
+  return (
+    <StyledApp>
+      <Board>
+        <Square index={0} player='x' />
+        <Square index={1} player='o' />
+        <Square index={2} player='x' />
+        <Square index={3} player='o' />
+        <Square index={4} player='x' />
+        <Square index={5} player='o' />
+        <Square index={6} player='x' />
+        <Square index={7} player='o' />
+        <Square index={8} player='x' />
+      </Board>
+    </StyledApp>
+  )
+}
+```
+
+We're getting closer! Here's what you should see now:
+
+![First pass at squares](./assets/first-pass-at-squares.png)
+
+Let's do a commit:
+
+```bash
+git add -A
+git commit -m "First pass at board squares"
+git push
+```
