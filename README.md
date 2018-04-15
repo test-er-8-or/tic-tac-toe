@@ -299,3 +299,113 @@ git add -A
 git commit -m "First pass at board squares"
 git push
 ```
+
+## Adding polish
+
+OK, that doesn't look like a normal tic-tac-toe board, which looks a little like a # sign. We need to get rid of a few borders.
+
+Fortunately, we can change our styled components based on the props we're passing in. Take a look at this line in our `src/components/Square/index.js` file:
+
+```javascript
+border-width: 2px;
+```
+
+We only want _some_ borders to be this width, and the rest we want to be 0px wide, right?
+
+Can we make our board using only `border-bottom` and `border-right`? Let's think about it. Which squares would need a `border-bottom`? It would be the top six, right? Those are cells 0-5 in our array. In other words, every square in the board with an index less than 6 should have a bottom border of 2px. We could make a function to take the index and return the correct border width like this:
+
+```javascript
+index => index < 6 ? '2px' : 0
+```
+
+That is an arrow function expression that represents a function that takes one parameter, which we'll call `index` here, then compares that index with 6, and if it is less than 6, it return the value right after the `?`, which is '2px'. If it is not less than six, it returns the value right after the `:`, which is 0. This is called a ternary operator because it has three parts: the condition, the value returned when the condition is true, and the value returned when the condition is false, in that order.
+
+Our `styled.div` function accepts a props object, and we can provide functions on those props to use in our tagged template.
+
+What about the right borders? A look at our numbered game board above shows us that we'd want the borders on our first two columns, which means squares 0, 3, and 6, and squares 1, 4, and 7, but not on squares 2, 5, and 8. What do these numbers have in common? The trick is to think about the repetition in our board. We have rows of three squares, so every three squares we repeat. So 3 is an important number.
+
+If we divide the indexes of the squares in the first column by 3, we get 0 remainder (0, 3, and 6 all divide evenly by 3). If we divide the indexes of the squares in the second column by 3, we get a remainder of 1, and if we do the same with the third column, we get a remainder of 2. So we _don't_ want to add right borders to those squares that have a remainder of 2 when their indexes are divided by 3:
+
+```javascript
+index => index % 3 === 2 ? 0 : '2px'
+```
+
+Here, `%` is the remainder operator. This function takes a parameter (call it `index`), and if it has a remainder of 2 when divided by 3, it returns 0, otherwise it returns '2px'.
+
+Let's put these in our code in `src/components/Square/index.js`, remembering that the order for border properties is top, right, bottom, left:
+
+```javascript
+import React from 'react'
+import styled from 'styled-components'
+
+const StyledSquare = styled.div`
+  border-color: hsla(0, 0%, 0%, 0.2);
+  border-style: solid;
+  border-width: 0
+    ${props => (props.index % 3 === 2 ? 0 : '2px')}
+    ${props => (props.index < 6 ? '2px' : 0)}
+    0;
+  color: gray;
+  font-size: 16vh;
+  font-weight: bold;
+  line-height: 20vh;
+  text-align: center;
+  text-transform: uppercase;
+`
+
+export default function Square (props) {
+  return (
+    <StyledSquare index={props.index} player={props.player}>
+      {props.player}
+    </StyledSquare>
+  )
+}
+```
+
+Check the browser, and we should see this:
+
+![Got the borders right](./assets/correct-borders.png)
+
+It worked! But the colours kind of suck. Let's use a red for the X values, and a green for the O values. Chistmassy, right?
+
+As we're also passing the `player` into the Square, we can use that prop to set the color:
+
+```javascript
+import React from 'react'
+import styled from 'styled-components'
+
+const StyledSquare = styled.div`
+  border-color: hsla(0, 0%, 0%, 0.2);
+  border-style: solid;
+  border-width: 0
+    ${props => (props.index % 3 === 2 ? 0 : '2px')}
+    ${props => (props.index < 6 ? '2px' : 0)}
+    0;
+  color: ${props => (props.player === 'x' ? 'hsla(6, 59%, 50%, 1)' : 'hsla(145, 63%, 32%, 1)')};
+  font-size: 16vh;
+  font-weight: bold;
+  line-height: 20vh;
+  text-align: center;
+  text-transform: uppercase;
+`
+
+export default function Square (props) {
+  return (
+    <StyledSquare index={props.index} player={props.player}>
+      {props.player}
+    </StyledSquare>
+  )
+}
+```
+
+And we have colours!
+
+![Squares with colours](./assets/player-colors.png)
+
+Good time to do a commit:
+
+```bash
+git add -A
+git commit -m "Improve the board squares"
+git push
+```
