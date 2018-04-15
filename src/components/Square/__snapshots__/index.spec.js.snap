@@ -1,0 +1,101 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`components:Square renders the Square with the proper styles for player O in the top left square 1`] = `
+.c0 {
+  border-color: hsla(0,0%,0%,0.2);
+  border-style: solid;
+  border-width: 0 2px 2px 0;
+  color: hsla(145,63%,32%,1);
+  font-size: 16vh;
+  font-weight: bold;
+  line-height: 20vh;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+<div
+  className="c0"
+>
+  o
+</div>
+`;
+
+exports[`components:Square renders the Square with the proper styles for player X in the bottom left square 1`] = `
+.c0 {
+  border-color: hsla(0,0%,0%,0.2);
+  border-style: solid;
+  border-width: 0 2px 0 0;
+  color: hsla(6,59%,50%,1);
+  font-size: 16vh;
+  font-weight: bold;
+  line-height: 20vh;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+<div
+  className="c0"
+>
+  x
+</div>
+`;
+
+exports[`components:Square renders the Square with the proper styles for player X in the bottom right square 1`] = `
+.c0 {
+  border-color: hsla(0,0%,0%,0.2);
+  border-style: solid;
+  border-width: 0 0 0 0;
+  color: hsla(6,59%,50%,1);
+  font-size: 16vh;
+  font-weight: bold;
+  line-height: 20vh;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+<div
+  className="c0"
+>
+  x
+</div>
+`;
+
+exports[`components:Square renders the Square with the proper styles for player X in the top left square 1`] = `
+.c0 {
+  border-color: hsla(0,0%,0%,0.2);
+  border-style: solid;
+  border-width: 0 2px 2px 0;
+  color: hsla(6,59%,50%,1);
+  font-size: 16vh;
+  font-weight: bold;
+  line-height: 20vh;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+<div
+  className="c0"
+>
+  x
+</div>
+`;
+
+exports[`components:Square renders the Square with the proper styles for player X in the top right square 1`] = `
+.c0 {
+  border-color: hsla(0,0%,0%,0.2);
+  border-style: solid;
+  border-width: 0 0 2px 0;
+  color: hsla(6,59%,50%,1);
+  font-size: 16vh;
+  font-weight: bold;
+  line-height: 20vh;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+<div
+  className="c0"
+>
+  x
+</div>
+`;

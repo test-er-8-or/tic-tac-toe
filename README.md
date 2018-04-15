@@ -132,3 +132,367 @@ git add -A
 git commit -m "Add the test configuration and first snapshot test"
 git push
 ```
+
+## Adding the remaining snapshots
+
+### Board
+
+Create `src/components/Board/index.spec.js` and add the following code:
+
+```javascript
+import React from 'react'
+import { shallow } from 'enzyme'
+
+import Board from './'
+
+describe('components:Board', () => {
+  it('renders the Board with the proper styles', () => {
+    expect(toJson(shallow(<Board />))).toMatchSnapshot()
+  })
+})
+```
+
+Then run `yarn test` and let's see what the snapshot looks like. If we check `src/components/Board/__snapshots__/index.spec.js.snap`, we find:
+
+```javascript
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`components:Board renders the Board with the proper styles 1`] = `
+.c0 {
+  -webkit-align-self: center;
+  -ms-flex-item-align: center;
+  align-self: center;
+  display: grid;
+  grid-area: board;
+  grid-gap: 0;
+  grid-template-areas: 'zero one two' 'three four five' 'six seven eight';
+  grid-template-columns: 20vh 20vh 20vh;
+  grid-template-rows: 20vh 20vh 20vh;
+  height: 60vh;
+  justify-self: center;
+  margin: auto;
+  width: 60vh;
+}
+
+<div
+  className="c0"
+/>
+`;
+```
+
+You can see that `jest-styled-components` has included our CSS styles. Now, when a style changes, so does the snapshot. That's handy, no?
+
+### Square
+
+Let's add the `Square` snapshot test next. In `src/components/Square/index.spec.js` add this code:
+
+```javascript
+import React from 'react'
+import { shallow } from 'enzyme'
+
+import Square from './'
+
+describe('components:Square', () => {
+  it('renders the Square with the proper styles', () => {
+    expect(toJson(shallow(<Square />))).toMatchSnapshot()
+  })
+})
+```
+
+And run the tests with `yarn test`.
+
+Now `src/components/Square/__snapshots__/index.spec.js.snap` looks like this:
+
+```javascript
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`components:Square renders the Square with the proper styles 1`] = `<styled.div />`;
+```
+
+Not very useful, is it? That's because we've wrapped our StyledDiv in another component. Our shallow render only goes one deep! What can we do?
+
+Let's modify the test to `dive` into that component:
+
+```javascript
+import React from 'react'
+import { shallow } from 'enzyme'
+
+import Square from './'
+
+describe('components:Square', () => {
+  it('renders the Square with the proper styles', () => {
+    expect(toJson(shallow(<Square />).dive())).toMatchSnapshot()
+  })
+})
+```
+
+Run our test again (or did they run automatically?), and _they fail!_
+
+Well, of course they do! We changed the snapshot, right? That's what they're supposed to do. So now let's hit `u` to update the snapshot, and they should pass. Check the `src/components/Square/__snapshots__/index.spec.js.snap` file again and you should see this:
+
+```javascript
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`components:Square renders the Square with the proper styles 1`] = `
+.c0 {
+  border-color: hsla(0,0%,0%,0.2);
+  border-style: solid;
+  border-width: 0 2px 0 0;
+  color: hsla(145,63%,32%,1);
+  font-size: 16vh;
+  font-weight: bold;
+  line-height: 20vh;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+<div
+  className="c0"
+/>
+`;
+```
+
+That's more like it. But doesn't our colour change depending on player? Doesn't our border-width vary according to square index? How can we test all these options?
+
+How about more snapshots? Update your `src/components/Square/index.spec.js` file to look like this:
+
+```javascript
+import React from 'react'
+import { shallow } from 'enzyme'
+
+import Square from './'
+
+describe('components:Square', () => {
+  it('renders the Square with the proper styles for player O in the top left square', () => {
+    expect(
+      toJson(shallow(<Square player='o' index={0} />).dive())
+    ).toMatchSnapshot()
+  })
+
+  it('renders the Square with the proper styles for player X in the top left square', () => {
+    expect(
+      toJson(shallow(<Square player='x' index={0} />).dive())
+    ).toMatchSnapshot()
+  })
+
+  it('renders the Square with the proper styles for player X in the top right square', () => {
+    expect(
+      toJson(shallow(<Square player='x' index={2} />).dive())
+    ).toMatchSnapshot()
+  })
+
+  it('renders the Square with the proper styles for player X in the bottom left square', () => {
+    expect(
+      toJson(shallow(<Square player='x' index={6} />).dive())
+    ).toMatchSnapshot()
+  })
+
+  it('renders the Square with the proper styles for player X in the bottom right square', () => {
+    expect(
+      toJson(shallow(<Square player='x' index={8} />).dive())
+    ).toMatchSnapshot()
+  })
+})
+```
+
+Rerun the tests, updating with `u` until they're all passing. Your `src/components/Square/__snapshots__/index.spec.js.snap` should look something like this (note: your order may vary as tests are run in random order):
+
+```javascript
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`components:Square renders the Square with the proper styles for player O in the top left square 1`] = `
+.c0 {
+  border-color: hsla(0,0%,0%,0.2);
+  border-style: solid;
+  border-width: 0 2px 2px 0;
+  color: hsla(145,63%,32%,1);
+  font-size: 16vh;
+  font-weight: bold;
+  line-height: 20vh;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+<div
+  className="c0"
+>
+  o
+</div>
+`;
+
+exports[`components:Square renders the Square with the proper styles for player X in the bottom left square 1`] = `
+.c0 {
+  border-color: hsla(0,0%,0%,0.2);
+  border-style: solid;
+  border-width: 0 2px 0 0;
+  color: hsla(6,59%,50%,1);
+  font-size: 16vh;
+  font-weight: bold;
+  line-height: 20vh;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+<div
+  className="c0"
+>
+  x
+</div>
+`;
+
+exports[`components:Square renders the Square with the proper styles for player X in the bottom right square 1`] = `
+.c0 {
+  border-color: hsla(0,0%,0%,0.2);
+  border-style: solid;
+  border-width: 0 0 0 0;
+  color: hsla(6,59%,50%,1);
+  font-size: 16vh;
+  font-weight: bold;
+  line-height: 20vh;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+<div
+  className="c0"
+>
+  x
+</div>
+`;
+
+exports[`components:Square renders the Square with the proper styles for player X in the top left square 1`] = `
+.c0 {
+  border-color: hsla(0,0%,0%,0.2);
+  border-style: solid;
+  border-width: 0 2px 2px 0;
+  color: hsla(6,59%,50%,1);
+  font-size: 16vh;
+  font-weight: bold;
+  line-height: 20vh;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+<div
+  className="c0"
+>
+  x
+</div>
+`;
+
+exports[`components:Square renders the Square with the proper styles for player X in the top right square 1`] = `
+.c0 {
+  border-color: hsla(0,0%,0%,0.2);
+  border-style: solid;
+  border-width: 0 0 2px 0;
+  color: hsla(6,59%,50%,1);
+  font-size: 16vh;
+  font-weight: bold;
+  line-height: 20vh;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+<div
+  className="c0"
+>
+  x
+</div>
+`;
+```
+
+Pay special attention to the content of the `<div>` element, which should be `x` or `o`, and the values for `color` and `border-width`. They should change according to the player and the position of the square, respectively. I think we've got all the possibilities covered here, but if you wanted to be really thorough, you could test all nine squares. I'm OK with this.
+
+## Finishing up
+
+Let's go back to our `App` test and do a `dive()` to make sure our CSS is being tested. In `src/components/App/index.js`:
+
+```javascript
+import React from 'react'
+import { shallow } from 'enzyme'
+
+import App from './'
+
+describe('components:App', () => {
+  it('renders the App with a game board and nine squares', () => {
+    expect(toJson(shallow(<App />).dive())).toMatchSnapshot()
+  })
+```
+
+Update the tests with `u` and check the `src/components/App/__snapshots__/index.spec.js.snap` file and you should see:
+
+```javascript
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`components:App renders the App with a game board and nine squares 1`] = `
+.c0 {
+  display: grid;
+  font-family: 'Verdana',sans-serif;
+  grid-template-areas: 'board';
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+}
+
+<div
+  className="c0"
+>
+  <styled.div>
+    <Square
+      index={0}
+      key="0"
+      player="x"
+    />
+    <Square
+      index={1}
+      key="1"
+      player="o"
+    />
+    <Square
+      index={2}
+      key="2"
+      player="x"
+    />
+    <Square
+      index={3}
+      key="3"
+      player="o"
+    />
+    <Square
+      index={4}
+      key="4"
+      player="x"
+    />
+    <Square
+      index={5}
+      key="5"
+      player="o"
+    />
+    <Square
+      index={6}
+      key="6"
+      player="x"
+    />
+    <Square
+      index={7}
+      key="7"
+      player="o"
+    />
+    <Square
+      index={8}
+      key="8"
+      player="x"
+    />
+  </styled.div>
+</div>
+`;
+```
+
+Looking good. Let's do a commit:
+
+```bash
+git add -A
+git commit -m "Add remaining snapshot tests"
+git push
+```

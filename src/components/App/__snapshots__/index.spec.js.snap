@@ -1,7 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`components:App renders the App with a game board and nine squares 1`] = `
-<styled.div>
+.c0 {
+  display: grid;
+  font-family: 'Verdana',sans-serif;
+  grid-template-areas: 'board';
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+}
+
+<div
+  className="c0"
+>
   <styled.div>
     <Square
       index={0}
@@ -49,5 +61,5 @@ exports[`components:App renders the App with a game board and nine squares 1`] =
       player="x"
     />
   </styled.div>
-</styled.div>
+</div>
 `;
