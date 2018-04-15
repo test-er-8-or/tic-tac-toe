@@ -1,487 +1,134 @@
-# Adding the game board
+# Adding snapshot tests for our React components
 
-The first thing we'll do is to set up a game board. In this step, we're just going to create a visual board. We won't worry about updating the board, tracking players, or anything else. We'll just make a nice-looking tic-tac-toe board.
+We're going to add tests that take a "snapshot" of our shallowly rendered components. Then each time we run our test suite, we'll shallowly render the component again and check that output against our previous snapshot. This way we are warned when our component's output changes, and we can make sure that the output is what we expected it to be.
 
-To do this, we're going to use [styled-components](https://www.styled-components.com/). The `styled-components` library makes it easy for us to create React components that carry their own CSS style with them. When the application is built, the `styled-components` library will automatically extract the CSS from each component, wrap it in a unique CSS class, and inject it into a stylesheet in the head of the HTML document, just like a regular CSS stylesheet. What's more, it will add that unique class name to the React component.
+`create-react-app` allows us to add our own test setup in a file called `src/setupTests.js`. Whatever we put in that file will be loaded before any tests are run. Think of it as a global configuration for our tests.
 
-For more information on how this works and the whys, check out [this video by MaxStoiber](https://www.youtube.com/watch?v=bIK2NwoK9xk), the inventor of `styled-components`.
+Create the file now, and add this code:
 
-But first, let's just create a basic board. Currently, our `src/components/App/index.js` file looks like this:
+```javascript
+import Enzyme from 'enzyme'
+import Adapter from 'enzyme-adapter-react-16'
+import 'jest-enzyme'
+import 'jest-styled-components'
+import toJson from 'enzyme-to-json'
+
+Enzyme.configure({ adapter: new Adapter() })
+
+global.toJson = toJson
+```
+
+First we import Enzyme, which is an AirBnB-created library that helps us to render and test React components. We also need the React version 16 adapter so we can use it with React version 16, which is what we're using to build our game. We can also import all the test "matcher" methods from the `jest-enzyme` library. You'll see these in action later. Then `jest-styled-components` let's us work with `styled-components` in our snapshot tests. Finally, `enzyme-to-json` makes our snapshots prettier and easier to read (for humans, which is what most of us are, probably).
+
+Then we tell Enzyme to use the React 16 Adapter. Finally, we put the `enzyme-to-json` `toJson` function in our `global` object, which is imported into all our test files. That just prevents us from having to import it in every test file.
+
+# First test
+
+Now we'll add our first test. We'll use the extension `spec.js` for all our test files. The `spec` part indicates that we are using a [Behaviour-Driven Development (BDD)](https://en.wikipedia.org/wiki/Behavior-driven_development) style. Don't worry too much about that. The link is for folks who _just have to know_.
+
+So let's create a `src/components/App/index.spec.js` file and add the following code:
 
 ```javascript
 import React from 'react'
+import { shallow } from 'enzyme'
 
-export default function App () {
-  return <h1>Tic-Tac-Toe</h1>
-}
+import App from './'
+
+describe('components:App', () => {
+  it('renders the App with a game board and nine squares', () => {
+    expect(toJson(shallow(<App />))).toMatchSnapshot()
+  })
+})
 ```
 
-We'll replace the current output with a simple board made up of `div` elements. Make your `src/components/App/index.js` file look like this:
+The `shallow` renderer will render our React component, but only one leve deep. That means that subcomponents will not be fully rendered. But that's OK because we'll test those components individually. Shallow rendering is fast and makes it easier to debug problems because we know that _they're only one level deep!_
+
+We need to import our App component, of course, and here you can see the benefit of using folders with the component name: our components and their tests (and the `__snapshots__` folder to come) are all neatly contained in one spot.
+
+We will group our tests in `describe` blocks, which are just function calls. The `describe` block takes a string description and a function that will group one or more tests together.
+
+Inside the `describe` block, we add a `test` block. `it` is an alias for `test`. I prefer it because it is more readable (and more of a BDD style). Like the `describe` block, `it` takes a string description of the test and a function that runs the actual test.
+
+In the `it` block we call `shallow(<App />)`, passing it our `<App />` component. That renders the `<App />` component _just one level deep. We pass that to our `toJson` function imported from `enzyme-to-json`, which will pretty it up for us. Then we pass that to our `expect` function, and call the expect's "matcher" method `toMatchSnapshot`. This creates our snapshot if it doesn't exist (and puts it in a `__snapshots__` folder). If a snapshot exists, then it compares the two and either passes if they match, or throws an error if they don't.
+
+Simple, really.
+
+We can run our tests:
+
+```bash
+yarn test
+```
+
+This will run our tests _in watch mode_. Which means it will stay running (kill it with `q`). Each time we update a file or a test, it will re-run.
+
+The first time we run `yarn test`, we should see this:
+
+![First snapshot test](./assets/first-snapshot-test.png)
+
+Talk a look at the `src/components/App/__snapshots__/index.spec.js.snap` file and you should see this:
 
 ```javascript
-import React from 'react'
+// Jest Snapshot v1, https://goo.gl/fbAQLP
 
-export default function App () {
-  return (
-    <div>
-      <div>
-        <div>0</div>
-        <div>1</div>
-        <div>2</div>
-        <div>3</div>
-        <div>4</div>
-        <div>5</div>
-        <div>6</div>
-        <div>7</div>
-        <div>8</div>
-      </div>
-    </div>
-  )
-}
+exports[`components:App renders the App with a game board and nine squares 1`] = `
+<styled.div>
+  <styled.div>
+    <Square
+      index={0}
+      key="0"
+      player="x"
+    />
+    <Square
+      index={1}
+      key="1"
+      player="o"
+    />
+    <Square
+      index={2}
+      key="2"
+      player="x"
+    />
+    <Square
+      index={3}
+      key="3"
+      player="o"
+    />
+    <Square
+      index={4}
+      key="4"
+      player="x"
+    />
+    <Square
+      index={5}
+      key="5"
+      player="o"
+    />
+    <Square
+      index={6}
+      key="6"
+      player="x"
+    />
+    <Square
+      index={7}
+      key="7"
+      player="o"
+    />
+    <Square
+      index={8}
+      key="8"
+      player="x"
+    />
+  </styled.div>
+</styled.div>
+`;
 ```
 
-The outermost div will be our App, the first nested div will be our Board, and the nine divs nested in that one will be our nine Squares.
+Pretty easy to read, right? Note that the `Square` components were not further rendered into their `div` elements. That's shallow rendering at work.
 
-Save your changes and run `yarn start` then point your browser to [http://localhost:3000/](http://localhost:3000/) to see the changes. You should see something like thes:
-
-![First pass at the game board](./assets/first-pass-game-board.png)
-
-Doesn't look much like a tic-tac-toe board, does it. But don't worry, we'll fix that shortly. Notice that we've numbered the squares starting with zero. That's because were going to use a JavaScript array to keep track of our board's squares, and JavaScript array indices begin with 0.
-
-Before we move on, let's do a commit:
+Time for a commit:
 
 ```bash
 git add -A
-git commit -m "Add first pass at game board"
+git commit -m "Add the test configuration and first snapshot test"
 git push
 ```
-
-## Thinking in React
-
-React is all about building reusable components. Think of them as our own, bespoke HTML elements. What kind of components would we want here? Well, we have a game board that consists of nine squares, each of which can hold either an X or an O. So it's seems reasonable that our `App` component would hold a `Board` component, and that our `Board` components would hold nine instances of a `Square` component.
-
-We'll start at the top. Let's begin by styling our `App` component. To do this, we'll create a `StyledApp` component with `styled-components` and we'll use that in our `App` component.
-
-First, we'll need to import the `styled-component` library at the top of our `src/components/App/index.js` file. Then we'll create a `StyledApp` component by using the `styled.div` method and passing it a [template string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#Multi-line_strings). This utilises a new feature of JavaScript called [tagged templates](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#Tagged_templates).
-
-```javascript
-import React from 'react'
-import styled from 'styled-components'
-
-const StyledApp = styled.div`
-  display: grid;
-  font-family: 'Verdana', sans-serif;
-  grid-template-areas: 'board';
-  height: 100vh;
-  margin: 0;
-  padding: 0;
-  width: 100vw;
-`
-
-export default function App () {
-  return (
-    <StyledApp>
-      <div>
-        <div>0</div>
-        <div>1</div>
-        <div>2</div>
-        <div>3</div>
-        <div>4</div>
-        <div>5</div>
-        <div>6</div>
-        <div>7</div>
-        <div>8</div>
-      </div>
-    </StyledApp>
-  )
-}
-```
-
-If you check the browser, you should see this:
-
-![Updated board](./assets/updated-board.png)
-
-Not much has changed (yet), but you can see that the font family has changed to Verdana (compare with the earlier screenshot), so our styles are being applied.
-
-We can also verify this by looking in the Chrome Devtools (or the equivalent in whatever browser you're using). If we look in the `<head>` element, we can see that the stylesheet has been extracted and injected into a `<style>` element, and that the class has a unique name:
-
-![CSS injected into the head element](./assets/chrome-devtools-stylesheet.png)
-
-And if we look in the body, we can see that this unique class has been applied to our App's `<div>` element:
-
-![Unique class added to our App div element](./assets/chrome-devtools-board.png)
-
-Sweet! Now let's create our Board component.
-
-First, we'll create a new folder under `src/components`. Call it `Board` and add an `index.js` file in it. We'll follow this pattern of naming the folder with the component name (in [PascalCase]()), and using `index.js` for the file name (`index.js` files are loaded by default, so we can still use `import Board from './components/Board'` to import the Board component). You're folder/file hierarchy should look like this when you're done:
-
-![Folder hierarchy after adding Board component](./assets/folders-after-board-added.png)
-
-Then in the `src/components/Board/index.js` file, add the following:
-
-```javascript
-import styled from 'styled-components'
-
-const Board = styled.div`
-  align-self: center;
-  display: grid;
-  grid-area: board;
-  grid-gap: 0;
-  grid-template-areas: 'zero one two' 'three four five' 'six seven eight';
-  grid-template-columns: 20vh 20vh 20vh;
-  grid-template-rows: 20vh 20vh 20vh;
-  height: 60vh;
-  justify-self: center;
-  margin: auto;
-  width: 60vh;
-`
-
-export default Board
-```
-
-This is not a class in CSS, so we won't explain all the CSS we're using here. If you're interested, you can simply read more about [CSS Grid Layout]().
-
-Some things to note:
-
-* We aren't using any [JSX](https://reactjs.org/docs/jsx-in-depth.html), so we don't need to import React (JSX is the JavaScript that looks like HTML in our files).
-* We create a styled `<div />` component by calling the `div` function from the `styled` library _and passing it a template string. Template strings are multi-line strings delimited by the back tick (```) character.
-* We're using CSS Grid Layout to create a grid with three rows of three cells each. These cells will be our Squares.
-* We call the squares 'zero', 'one', 'two', etc., which corresponds to the square's index in an array (JavaScript array indices start at 0).
-* Each row is `20vh` units high, and each column is `20vh` units wide. A `vh` unit is 1% of the height of the window, so each square will have height and width equal to 20% of the height of the window area.
-* The gap between the squares is set to 0 pixels.
-
-Let's add our `Board` export to our `src/components/index.js` file so that we can import it easily:
-
-```javascript
-import App from './App'
-import Board from './Board'
-
-export { App, Board }
-```
-
-And now let's import it into our `src/components/App/index.js` file so that we can use it:
-
-```javascript
-import React from 'react'
-import styled from 'styled-components'
-
-import { Board } from '../'
-
-const StyledApp = styled.div`
-  display: grid;
-  font-family: 'Verdana', sans-serif;
-  grid-template-areas: 'board';
-  height: 100vh;
-  margin: 0;
-  padding: 0;
-  width: 100vw;
-`
-
-export default function App () {
-  return (
-    <StyledApp>
-      <Board>
-        <div>0</div>
-        <div>1</div>
-        <div>2</div>
-        <div>3</div>
-        <div>4</div>
-        <div>5</div>
-        <div>6</div>
-        <div>7</div>
-        <div>8</div>
-      </Board>
-    </StyledApp>
-  )
-}
-```
-
-Run `yarn start` and see what it looks like. (Or, if you've never bothered to shut the server down using `Control-c`, you can just check your browser and it should have updated automatically.) You should see something like this:
-
-![First CSS grid board](./assets/first-grid-board.png)
-
-Time for another commit:
-
-```bash
-git add -A
-git commit -m "Add CSS grid board with styled-components"
-git push
-```
-
-### Now for the Squares
-
-OK, let's add our Square component now. First, create a `src/components/Square` folder and a `src/components/Square/index.js` file in it. Then add this code:
-
-```javascript
-import React from 'react'
-import styled from 'styled-components'
-
-const StyledSquare = styled.div`
-  border-color: hsla(0, 0%, 0%, 0.2);
-  border-style: solid;
-  border-width: 2px;
-  color: gray;
-  font-size: 16vh;
-  font-weight: bold;
-  line-height: 20vh;
-  text-align: center;
-  text-transform: uppercase;
-`
-
-export default function Square (props) {
-  return (
-    <StyledSquare index={props.index} player={props.player}>
-      {props.player}
-    </StyledSquare>
-  )
-}
-```
-
-Here we've imported React because we're using JSX. Our `Square` component uses the `StyledSquare` component. This is so that we can pass the player in as a prop, and also pass it in as the "children" of the `StyledSquare`. That will add it to our div as a text element (the innerHTML of our div).
-
-Let's see it in action and we'll see how it works, then we'll extend it a little.
-
-First, add it to `src/components/index.js`:
-
-```javascript
-import App from './App'
-import Board from './Board'
-import Square from './Square'
-
-export { App, Board, Square }
-```
-.
-Then we'll use it in our `src/components/App/index.js` file. We'll add in some temporary fake plays, too.
-
-```javascript
-import React from 'react'
-import styled from 'styled-components'
-
-import { Board, Square } from '../'
-
-const StyledApp = styled.div`
-  display: grid;
-  font-family: 'Verdana', sans-serif;
-  grid-template-areas: 'board';
-  height: 100vh;
-  margin: 0;
-  padding: 0;
-  width: 100vw;
-`
-
-export default function App () {
-  return (
-    <StyledApp>
-      <Board>
-        <Square index={0} player='x' />
-        <Square index={1} player='o' />
-        <Square index={2} player='x' />
-        <Square index={3} player='o' />
-        <Square index={4} player='x' />
-        <Square index={5} player='o' />
-        <Square index={6} player='x' />
-        <Square index={7} player='o' />
-        <Square index={8} player='x' />
-      </Board>
-    </StyledApp>
-  )
-}
-```
-
-We're getting closer! Here's what you should see now:
-
-![First pass at squares](./assets/first-pass-at-squares.png)
-
-Let's do a commit:
-
-```bash
-git add -A
-git commit -m "First pass at board squares"
-git push
-```
-
-## Adding polish
-
-OK, that doesn't look like a normal tic-tac-toe board, which looks a little like a # sign. We need to get rid of a few borders.
-
-Fortunately, we can change our styled components based on the props we're passing in. Take a look at this line in our `src/components/Square/index.js` file:
-
-```javascript
-border-width: 2px;
-```
-
-We only want _some_ borders to be this width, and the rest we want to be 0px wide, right?
-
-Can we make our board using only `border-bottom` and `border-right`? Let's think about it. Which squares would need a `border-bottom`? It would be the top six, right? Those are cells 0-5 in our array. In other words, every square in the board with an index less than 6 should have a bottom border of 2px. We could make a function to take the index and return the correct border width like this:
-
-```javascript
-index => index < 6 ? '2px' : 0
-```
-
-That is an arrow function expression that represents a function that takes one parameter, which we'll call `index` here, then compares that index with 6, and if it is less than 6, it return the value right after the `?`, which is '2px'. If it is not less than six, it returns the value right after the `:`, which is 0. This is called a ternary operator because it has three parts: the condition, the value returned when the condition is true, and the value returned when the condition is false, in that order.
-
-Our `styled.div` function accepts a props object, and we can provide functions on those props to use in our tagged template.
-
-What about the right borders? A look at our numbered game board above shows us that we'd want the borders on our first two columns, which means squares 0, 3, and 6, and squares 1, 4, and 7, but not on squares 2, 5, and 8. What do these numbers have in common? The trick is to think about the repetition in our board. We have rows of three squares, so every three squares we repeat. So 3 is an important number.
-
-If we divide the indexes of the squares in the first column by 3, we get 0 remainder (0, 3, and 6 all divide evenly by 3). If we divide the indexes of the squares in the second column by 3, we get a remainder of 1, and if we do the same with the third column, we get a remainder of 2. So we _don't_ want to add right borders to those squares that have a remainder of 2 when their indexes are divided by 3:
-
-```javascript
-index => index % 3 === 2 ? 0 : '2px'
-```
-
-Here, `%` is the remainder operator. This function takes a parameter (call it `index`), and if it has a remainder of 2 when divided by 3, it returns 0, otherwise it returns '2px'.
-
-Let's put these in our code in `src/components/Square/index.js`, remembering that the order for border properties is top, right, bottom, left:
-
-```javascript
-import React from 'react'
-import styled from 'styled-components'
-
-const StyledSquare = styled.div`
-  border-color: hsla(0, 0%, 0%, 0.2);
-  border-style: solid;
-  border-width: 0
-    ${props => (props.index % 3 === 2 ? 0 : '2px')}
-    ${props => (props.index < 6 ? '2px' : 0)}
-    0;
-  color: gray;
-  font-size: 16vh;
-  font-weight: bold;
-  line-height: 20vh;
-  text-align: center;
-  text-transform: uppercase;
-`
-
-export default function Square (props) {
-  return (
-    <StyledSquare index={props.index} player={props.player}>
-      {props.player}
-    </StyledSquare>
-  )
-}
-```
-
-Check the browser, and we should see this:
-
-![Got the borders right](./assets/correct-borders.png)
-
-It worked! But the colours kind of suck. Let's use a red for the X values, and a green for the O values. Chistmassy, right?
-
-As we're also passing the `player` into the Square, we can use that prop to set the color:
-
-```javascript
-import React from 'react'
-import styled from 'styled-components'
-
-const StyledSquare = styled.div`
-  border-color: hsla(0, 0%, 0%, 0.2);
-  border-style: solid;
-  border-width: 0
-    ${props => (props.index % 3 === 2 ? 0 : '2px')}
-    ${props => (props.index < 6 ? '2px' : 0)}
-    0;
-  color: ${props => (props.player === 'x' ? 'hsla(6, 59%, 50%, 1)' : 'hsla(145, 63%, 32%, 1)')};
-  font-size: 16vh;
-  font-weight: bold;
-  line-height: 20vh;
-  text-align: center;
-  text-transform: uppercase;
-`
-
-export default function Square (props) {
-  return (
-    <StyledSquare index={props.index} player={props.player}>
-      {props.player}
-    </StyledSquare>
-  )
-}
-```
-
-And we have colours!
-
-![Squares with colours](./assets/player-colors.png)
-
-Good time to do a commit:
-
-```bash
-git add -A
-git commit -m "Improve the board squares"
-git push
-```
-
-## Clean up and refactoring
-
-We can improve this a bit. Let's do our first real refactor.
-
-First, we can use Javascript's [destructuring assignment](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment) feature to avoid having to say `props.` everywhere. Take our `src/components/Square/index.js` file. Isn't this cleaner?
-
-```javascript
-import React from 'react'
-import styled from 'styled-components'
-
-const StyledSquare = styled.div`
-  border-color: hsla(0, 0%, 0%, 0.2);
-  border-style: solid;
-  border-width: 0 ${({ index }) => (index % 3 === 2 ? 0 : '2px')}
-    ${({ index }) => (index < 6 ? '2px' : 0)} 0;
-  color: ${({ player }) => (player === 'x' ? 'hsla(6, 59%, 50%, 1)' : 'hsla(145, 63%, 32%, 1)')};
-  font-size: 16vh;
-  font-weight: bold;
-  line-height: 20vh;
-  text-align: center;
-  text-transform: uppercase;
-`
-
-export default function Square ({ index, player }) {
-  return (
-    <StyledSquare index={index} player={player}>
-      {player}
-    </StyledSquare>
-  )
-}
-```
-
-We can also generate our board squares instead of hand coding them. This will come in handy later when we want to actually change them as each player plays.
-
-To do this, we'll use a [ramda](http://ramdajs.com/) function.
-
-The [times](http://ramdajs.com/repl/?v=0.25.0#?times%28i%20%3D%3E%20%60This%20is%20Square%20%23%24%7Bi%7D%60%2C%209%29) function takes a function and an integer _n_, and returns an array of length _n_ in which each item is created by calling the function, which is passed the index of that cell in the array. So the first cell, the function is called with 0, the second cell it is called with 1, etc.
-
-Let's use this in our `src/components/App/index.js` file to generate our board. We'll use an even/odd function to alternate between player X and player O as we create the squares:
-
-```javascript
-import React from 'react'
-import styled from 'styled-components'
-import { times } from 'ramda'
-
-import { Board, Square } from '../'
-
-const makeSquares = () =>
-  times(
-    idx => <Square key={idx} index={idx} player={idx % 2 === 0 ? 'x' : 'o'} />,
-    9
-  )
-
-const StyledApp = styled.div`
-  display: grid;
-  font-family: 'Verdana', sans-serif;
-  grid-template-areas: 'board';
-  height: 100vh;
-  margin: 0;
-  padding: 0;
-  width: 100vw;
-`
-
-export default function App () {
-  return (
-    <StyledApp>
-      <Board>
-        {makeSquares()}
-      </Board>
-    </StyledApp>
-  )
-}
-```
-
-Later, we'll extend this so that it handles our moves as they occur (and makes each cell clickable). But for now, this is enough. If you check your page, you should see that nothing has changed. But change the `idx % 2 === 0` above to `idx % 2 === 1` and you should see the X's and O's swap positions. (Then change it back&mdash;we're goint to make a rule that the first player is always X. That's makes things simpler.)

@@ -1,0 +1,53 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`components:App renders the App with a game board and nine squares 1`] = `
+<styled.div>
+  <styled.div>
+    <Square
+      index={0}
+      key="0"
+      player="x"
+    />
+    <Square
+      index={1}
+      key="1"
+      player="o"
+    />
+    <Square
+      index={2}
+      key="2"
+      player="x"
+    />
+    <Square
+      index={3}
+      key="3"
+      player="o"
+    />
+    <Square
+      index={4}
+      key="4"
+      player="x"
+    />
+    <Square
+      index={5}
+      key="5"
+      player="o"
+    />
+    <Square
+      index={6}
+      key="6"
+      player="x"
+    />
+    <Square
+      index={7}
+      key="7"
+      player="o"
+    />
+    <Square
+      index={8}
+      key="8"
+      player="x"
+    />
+  </styled.div>
+</styled.div>
+`;
