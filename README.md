@@ -165,3 +165,102 @@ git add -A
 git commit -m "Add click handling to the Squares"
 git push
 ```
+
+## Adding a getPlayer utility function
+
+We want to add our click handler to any Square that hasn't already been played, and if it has been played, then we want to set the player instead. So we're going to need to know whether a square has been played and, by the way, who played it, X or O.
+
+We talked earlier about having a `moves` array that might look like this: `[4, 0, 2]`. We'll write a `getPlayer` function that takes the current Square index and the moves array, determines if there has been a move in this Square, and if there has, returns the player's mark. If there hasn't been a move yet in that square, we'll return `undefined`.
+
+Let's start by creating a `src/utilties` folder, and inside that a `src/utilities/getPlayer` folder, and inside that an `index.spec.js` file. That's right, we're going to write the tests first. So in the `src/utilities/getPlayer/index.spec.js` file, add:
+
+```javascript
+import getPlayer from './'
+
+describe('utilities:getPlayer', () => {
+  it('returns undefined if moves array not provided', () => {
+    expect(getPlayer(4)).toBeUndefined()
+  })
+
+  it('returns `x` for even-numbered moves', () => {
+    expect(getPlayer(4, [4, 0])).toBe('x')
+  })
+
+  it('returns `o` for odd-numbered moves', () => {
+    expect(getPlayer(0, [4, 0])).toBe('o')
+  })
+
+  it('returns undefined for empty squares (not moved yet)', () => {
+    expect(getPlayer(3, [4, 0])).toBeUndefined()
+  })
+})
+```
+
+It should be pretty obvious what these tests do, and that they've covered most of our bases, if not all of them. Take the first one: "utilities:getPlayer returns undefined if moves array not provided". Then we have `getPlayer(4)`, which includes the Square's index (the move), but not the array of moves. And we `expect` the return from that function call `toBeUndefined`. Reads like English.
+
+Let's run the tests, but only on this file. Begin with our normal `yarn test`, but once the test harness starts up, hit `p` to filter by file name, type `getPlayer` at the prompt, and hit Enter. It should now run only the tests in the `src/utilities/getPlayer/index.spec.js` file, and you should see all four fail.
+
+Now we'll write the code to make them pass. This style of test-driven development (TDD) is similar to [red-green refactor](http://blog.cleancoder.com/uncle-bob/2014/12/17/TheCyclesOfTDD.html), except we don't have time to be quite as granular as we should be. But you can always write the tests and the code one line at a time.
+
+Here's a first pass at our `getPlayer` utility function. Put it in `src/utilities/getPlayer/index.js`.
+
+```javascript
+import { indexOf } from 'ramda'
+
+export default function getPlayer (square, moves = []) {
+  const move = indexOf(square, moves)
+
+  if (move < 0) {
+    return undefined
+  }
+
+  return move % 2 === 0 ? 'x' : 'o'
+}
+```
+
+The Ramda `indexOf` function gives us the index of an item in an array, or -1 if the item is not in the array. [Try it](http://ramdajs.com/repl/#?const%20arr%20%3D%20%5B%27a%27%2C%20%27b%27%2C%20%27c%27%5D%0A%0Aconsole.log%28indexOf%28%27a%27%2C%20arr%29%29%0Aconsole.log%28indexOf%28%27b%27%2C%20arr%29%29%0Aconsole.log%28indexOf%28%27c%27%2C%20arr%29%29%0Aconsole.log%28indexOf%28%27d%27%2C%20arr%29%29%0A).
+
+We then check if `indexOf(square, moves)` returned a -1, meaning there is no move in that square, and if so, return `undefined`.
+
+Finally, if we haven't already returned `undefined`, then we check whether the move is odd or even, and return 'o' or 'x' accordingly.
+
+Run the tests on `getPlayer` again, and they should all pass.
+
+Keeping our utility functions small and simple makes testing and debugging much easier. This function has a variable assignment, a guard (in case there is no move), and a result, which depends on a simple ternary operator.
+
+Let's add a `src/utilities/index.js` file that imports and re-exports utility functions. Add this code:
+
+```javascript
+import getPlayer from './getPlayer'
+
+export { getPlayer }
+```
+
+And we don't need to include this in our test coverage, so we'll add that to our `package.json` file:
+
+```json
+"collectCoverageFrom": [
+  "!src/registerServiceWorker.js",
+  "!src/index.js",
+  "!src/components/index.js",
+  "!src/utilities/index.js",
+  "src/**/*.{js,jsx}",
+  "!<rootDir>/node_modules/"
+],
+```
+
+Now if we run `yarn test --coverage`, we should see:
+
+![Utilities coverage](./assets/utilities-coverage.png)
+
+So we have a `getPlayer` function. What next?
+
+A commit:
+
+```bash
+git add -A
+git commit -m "Add the getPlayer utility function"
+git push
+```
+
+And then . . .
