@@ -1,14 +1,26 @@
 import React from 'react'
 import styled from 'styled-components'
 import { times } from 'ramda'
+import { isUndefined } from 'ramda-adjunct'
 
 import { Board, Square } from '../'
+import { getPlayer } from '../../utilities'
 
-const makeSquares = () =>
-  times(
-    idx => <Square key={idx} index={idx} player={idx % 2 === 0 ? 'x' : 'o'} />,
-    9
-  )
+function makeSquares (moves) {
+  return times(square => {
+    const player = getPlayer(square, moves)
+
+    return isUndefined(player) ? (
+      <Square
+        key={square}
+        index={square}
+        handleClick={() => console.log(`Square ${square}`)}
+      />
+    ) : (
+      <Square key={square} index={square} player={player} />
+    )
+  }, 9)
+}
 
 const StyledApp = styled.div`
   display: grid;
@@ -20,10 +32,10 @@ const StyledApp = styled.div`
   width: 100vw;
 `
 
-export default function App () {
+export default function App ({ moves = [] }) {
   return (
     <StyledApp>
-      <Board>{makeSquares()}</Board>
+      <Board>{makeSquares(moves)}</Board>
     </StyledApp>
   )
 }

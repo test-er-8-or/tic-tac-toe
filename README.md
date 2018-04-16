@@ -264,3 +264,244 @@ git push
 ```
 
 And then . . .
+
+## Adding the click handler _or_ player to the Squares
+
+Let's update our `src/components/App/index.js` file to use `getPlayer` and, on the basis of what it returns:
+
+* Provide a click handler to the Square if the player is `undefined` (we'll use a stubbed function for the moment)
+* Set the player to 'x' or 'y', respectively, if the player is defined
+
+We can do this in our `makeSquares` function. First we'll import our `getPlayer` function: `import { getPlayer } from '../../utilities'`. Then we'll update our function (and use a named function in the process):
+
+```javascript
+import React from 'react'
+import styled from 'styled-components'
+import { times } from 'ramda'
+import { isUndefined } from 'ramda-adjunct'
+
+import { Board, Square } from '../'
+import { getPlayer } from '../../utilities'
+
+function makeSquares (moves) {
+  return times(square => {
+    const player = getPlayer(square, moves)
+
+    return isUndefined(player)
+      ? <Square
+        key={square}
+        index={square}
+        handleClick={() => console.log(`Square ${square}`)}
+        />
+      : <Square key={square} index={square} player={player} />
+  }, 9)
+}
+
+const StyledApp = styled.div`
+  display: grid;
+  font-family: 'Verdana', sans-serif;
+  grid-template-areas: 'board';
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+`
+
+export default function App ({ moves = [4, 0, 2] /* mock */ }) {
+  return (
+    <StyledApp>
+      <Board>{makeSquares(moves)}</Board>
+    </StyledApp>
+  )
+}
+```
+
+Things to note:
+
+* We imported the `isUndefined` function from 'ramda-adjunct'
+* We imported the `getPlayer` utility function from '../../utilities'
+* Our `makeSquares` function has grown considerably, but all the changes are in the anonymous function we pass to the `times` method
+  * That function used to look like this: `idx => <Square key={idx} index={idx} player={idx % 2 === 0 ? 'x' : 'o'} />`
+  * Now we've renamed `idx` to be `square`, which is clearer
+  * We're also passing in the `moves` array in the call to `makeSquares` (we'll need it below in the anonymous function)
+  * Once we have the player, we check if it is `undefined`
+    * If it's undefined, we return a `Square` with a mock `handleClick` function that just logs out the square number to console
+    * If the player is defined, then we pass that to the `Square` in the `player` prop
+* We're passing in a hard-coded `moves` array in our call to `makeSquares`: this is only temporary so we can see if it works
+
+This is our new output. Note that the Squares that have been played have the correct players, and are not clickable.
+
+Let's add a new snapshot to cover this new situation where some squares are played. First, let's remove our mock `moves` array from `src/components/App/index.js`:
+
+```javascript
+export default function App ({ moves = [] }) {
+  return (
+    <StyledApp>
+      <Board>{makeSquares(moves)}</Board>
+    </StyledApp>
+  )
+}
+```
+
+Then, in `src/components/App/index.spec.js`, put:
+
+```javascript
+import React from 'react'
+import { shallow } from 'enzyme'
+
+import App from './'
+
+describe('components:App', () => {
+  it('renders the App with a blank game board and nine squares', () => {
+    expect(toJson(shallow(<App />).dive())).toMatchSnapshot()
+  })
+
+  it('renders the App with a game board three moves: center, top-left, top-right', () => {
+    expect(toJson(shallow(<App moves={[4, 0, 2]} />).dive())).toMatchSnapshot()
+  })
+})
+```
+
+Run the tests with `yarn test`, then hit `u` to update the snapshots. Then take a look in `src/components/App/__snapshots/index.spec.js.snap` and you should see something like this:
+
+```javascript
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`components:App renders the App with a blank game board and nine squares 1`] = `
+.c0 {
+  display: grid;
+  font-family: 'Verdana',sans-serif;
+  grid-template-areas: 'board';
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+}
+
+<div
+  className="c0"
+>
+  <styled.div>
+    <Square
+      handleClick={[Function]}
+      index={0}
+      key="0"
+    />
+    <Square
+      handleClick={[Function]}
+      index={1}
+      key="1"
+    />
+    <Square
+      handleClick={[Function]}
+      index={2}
+      key="2"
+    />
+    <Square
+      handleClick={[Function]}
+      index={3}
+      key="3"
+    />
+    <Square
+      handleClick={[Function]}
+      index={4}
+      key="4"
+    />
+    <Square
+      handleClick={[Function]}
+      index={5}
+      key="5"
+    />
+    <Square
+      handleClick={[Function]}
+      index={6}
+      key="6"
+    />
+    <Square
+      handleClick={[Function]}
+      index={7}
+      key="7"
+    />
+    <Square
+      handleClick={[Function]}
+      index={8}
+      key="8"
+    />
+  </styled.div>
+</div>
+`;
+
+exports[`components:App renders the App with a game board three moves: center, top-left, top-right 1`] = `
+.c0 {
+  display: grid;
+  font-family: 'Verdana',sans-serif;
+  grid-template-areas: 'board';
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+}
+
+<div
+  className="c0"
+>
+  <styled.div>
+    <Square
+      index={0}
+      key="0"
+      player="o"
+    />
+    <Square
+      handleClick={[Function]}
+      index={1}
+      key="1"
+    />
+    <Square
+      index={2}
+      key="2"
+      player="x"
+    />
+    <Square
+      handleClick={[Function]}
+      index={3}
+      key="3"
+    />
+    <Square
+      index={4}
+      key="4"
+      player="x"
+    />
+    <Square
+      handleClick={[Function]}
+      index={5}
+      key="5"
+    />
+    <Square
+      handleClick={[Function]}
+      index={6}
+      key="6"
+    />
+    <Square
+      handleClick={[Function]}
+      index={7}
+      key="7"
+    />
+    <Square
+      handleClick={[Function]}
+      index={8}
+      key="8"
+    />
+  </styled.div>
+</div>
+`;
+```
+
+You should see one board that's empty (every Square has a `handleClick` function), and another in which three squares are played (`player` set to 'x' or 'o', no `handleClick` function).
+
+That's enough for this time. We'll add state next. Meanwhile, let's do a commit:
+
+```bash
+git add -A
+git commit -m "Add click handler to squares, update snapshots"
+git push
+```

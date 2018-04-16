@@ -1,6 +1,70 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`components:App renders the App with a game board and nine squares 1`] = `
+exports[`components:App renders the App with a blank game board and nine squares 1`] = `
+.c0 {
+  display: grid;
+  font-family: 'Verdana',sans-serif;
+  grid-template-areas: 'board';
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+}
+
+<div
+  className="c0"
+>
+  <styled.div>
+    <Square
+      handleClick={[Function]}
+      index={0}
+      key="0"
+    />
+    <Square
+      handleClick={[Function]}
+      index={1}
+      key="1"
+    />
+    <Square
+      handleClick={[Function]}
+      index={2}
+      key="2"
+    />
+    <Square
+      handleClick={[Function]}
+      index={3}
+      key="3"
+    />
+    <Square
+      handleClick={[Function]}
+      index={4}
+      key="4"
+    />
+    <Square
+      handleClick={[Function]}
+      index={5}
+      key="5"
+    />
+    <Square
+      handleClick={[Function]}
+      index={6}
+      key="6"
+    />
+    <Square
+      handleClick={[Function]}
+      index={7}
+      key="7"
+    />
+    <Square
+      handleClick={[Function]}
+      index={8}
+      key="8"
+    />
+  </styled.div>
+</div>
+`;
+
+exports[`components:App renders the App with a game board three moves: center, top-left, top-right 1`] = `
 .c0 {
   display: grid;
   font-family: 'Verdana',sans-serif;
@@ -18,12 +82,12 @@ exports[`components:App renders the App with a game board and nine squares 1`] =
     <Square
       index={0}
       key="0"
-      player="x"
+      player="o"
     />
     <Square
+      handleClick={[Function]}
       index={1}
       key="1"
-      player="o"
     />
     <Square
       index={2}
@@ -31,9 +95,9 @@ exports[`components:App renders the App with a game board and nine squares 1`] =
       player="x"
     />
     <Square
+      handleClick={[Function]}
       index={3}
       key="3"
-      player="o"
     />
     <Square
       index={4}
@@ -41,24 +105,24 @@ exports[`components:App renders the App with a game board and nine squares 1`] =
       player="x"
     />
     <Square
+      handleClick={[Function]}
       index={5}
       key="5"
-      player="o"
     />
     <Square
+      handleClick={[Function]}
       index={6}
       key="6"
-      player="x"
     />
     <Square
+      handleClick={[Function]}
       index={7}
       key="7"
-      player="o"
     />
     <Square
+      handleClick={[Function]}
       index={8}
       key="8"
-      player="x"
     />
   </styled.div>
 </div>
