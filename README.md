@@ -329,7 +329,9 @@ Things to note:
     * If the player is defined, then we pass that to the `Square` in the `player` prop
 * We're passing in a hard-coded `moves` array in our call to `makeSquares`: this is only temporary so we can see if it works
 
-This is our new output. Note that the Squares that have been played have the correct players, and are not clickable.
+This is our new output. Note that the Squares that have been played have the correct players, and are not clickable. But click on a few empty squares and take a look in the developer console. You should see something like this:
+
+![Clicking on squares](./assets/clicking-on-squares.png)
 
 Let's add a new snapshot to cover this new situation where some squares are played. First, let's remove our mock `moves` array from `src/components/App/index.js`:
 
