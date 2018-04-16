@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { times } from 'ramda'
 
-import { Board, Square } from '../'
+import { Board, Square } from '..'
 
 const makeSquares = () =>
   times(

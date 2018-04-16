@@ -32,7 +32,7 @@ So let's create a `src/components/App/index.spec.js` file and add the following 
 import React from 'react'
 import { shallow } from 'enzyme'
 
-import App from './'
+import App from '.'
 
 describe('components:App', () => {
   it('renders the App with a game board and nine squares', () => {
@@ -143,7 +143,7 @@ Create `src/components/Board/index.spec.js` and add the following code:
 import React from 'react'
 import { shallow } from 'enzyme'
 
-import Board from './'
+import Board from '.'
 
 describe('components:Board', () => {
   it('renders the Board with the proper styles', () => {
@@ -190,7 +190,7 @@ Let's add the `Square` snapshot test next. In `src/components/Square/index.spec.
 import React from 'react'
 import { shallow } from 'enzyme'
 
-import Square from './'
+import Square from '.'
 
 describe('components:Square', () => {
   it('renders the Square with the proper styles', () => {
@@ -217,7 +217,7 @@ Let's modify the test to `dive` into that component:
 import React from 'react'
 import { shallow } from 'enzyme'
 
-import Square from './'
+import Square from '.'
 
 describe('components:Square', () => {
   it('renders the Square with the proper styles', () => {
@@ -260,7 +260,7 @@ How about more snapshots? Update your `src/components/Square/index.spec.js` file
 import React from 'react'
 import { shallow } from 'enzyme'
 
-import Square from './'
+import Square from '.'
 
 describe('components:Square', () => {
   it('renders the Square with the proper styles for player O in the top left square', () => {
@@ -411,7 +411,7 @@ Let's go back to our `App` test and do a `dive()` to make sure our CSS is being 
 import React from 'react'
 import { shallow } from 'enzyme'
 
-import App from './'
+import App from '.'
 
 describe('components:App', () => {
   it('renders the App with a game board and nine squares', () => {
