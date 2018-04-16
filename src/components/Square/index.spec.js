@@ -1,7 +1,7 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 
-import Square from './'
+import Square from '.'
 
 describe('components:Square', () => {
   it('renders the Square with the proper cursor if a click handler is provided', () => {

@@ -1,4 +1,4 @@
-import getPlayer from './'
+import getPlayer from '.'
 
 describe('utilities:getPlayer', () => {
   it('returns undefined if moves array not provided', () => {

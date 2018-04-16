@@ -91,7 +91,7 @@ No surprise there. That's the line we added. And if you look at the snapshot its
 import React from 'react'
 import { shallow } from 'enzyme'
 
-import Square from './'
+import Square from '.'
 
 describe('components:Square', () => {
   it('renders the Square with the proper cursor if a click handler is provided', () => {
@@ -175,7 +175,7 @@ We talked earlier about having a `moves` array that might look like this: `[4, 0
 Let's start by creating a `src/utilties` folder, and inside that a `src/utilities/getPlayer` folder, and inside that an `index.spec.js` file. That's right, we're going to write the tests first. So in the `src/utilities/getPlayer/index.spec.js` file, add:
 
 ```javascript
-import getPlayer from './'
+import getPlayer from '.'
 
 describe('utilities:getPlayer', () => {
   it('returns undefined if moves array not provided', () => {
@@ -280,7 +280,7 @@ import styled from 'styled-components'
 import { times } from 'ramda'
 import { isUndefined } from 'ramda-adjunct'
 
-import { Board, Square } from '../'
+import { Board, Square } from '..'
 import { getPlayer } from '../../utilities'
 
 function makeSquares (moves) {
@@ -351,7 +351,7 @@ Then, in `src/components/App/index.spec.js`, put:
 import React from 'react'
 import { shallow } from 'enzyme'
 
-import App from './'
+import App from '.'
 
 describe('components:App', () => {
   it('renders the App with a blank game board and nine squares', () => {

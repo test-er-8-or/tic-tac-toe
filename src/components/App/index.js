@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { times } from 'ramda'
 import { isUndefined } from 'ramda-adjunct'
 
-import { Board, Square } from '../'
+import { Board, Square } from '..'
 import { getPlayer } from '../../utilities'
 
 function makeSquares (moves) {
