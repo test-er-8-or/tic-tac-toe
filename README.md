@@ -165,7 +165,7 @@ And now let's import it into our `src/components/App/index.js` file so that we c
 import React from 'react'
 import styled from 'styled-components'
 
-import { Board } from '../'
+import { Board } from '..'
 
 const StyledApp = styled.div`
   display: grid;
@@ -257,7 +257,7 @@ Then we'll use it in our `src/components/App/index.js` file. We'll add in some t
 import React from 'react'
 import styled from 'styled-components'
 
-import { Board, Square } from '../'
+import { Board, Square } from '..'
 
 const StyledApp = styled.div`
   display: grid;
@@ -455,7 +455,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { times } from 'ramda'
 
-import { Board, Square } from '../'
+import { Board, Square } from '..'
 
 const makeSquares = () =>
   times(
