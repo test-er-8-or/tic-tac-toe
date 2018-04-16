@@ -47,6 +47,7 @@
       "!src/registerServiceWorker.js",
       "!src/index.js",
       "!src/components/index.js",
+      "!src/state/index.js",
       "!src/utilities/index.js",
       "src/**/*.{js,jsx}",
       "!<rootDir>/node_modules/"
