@@ -376,3 +376,72 @@ git add -A
 git commit -m "Add getMoves selector"
 git push
 ```
+
+-----
+
+Next, we'll need a store to put our state in, dispatch our actions to our reducer, and notify our components when the state is updated. That's what Redux gives us.
+
+## Adding the store
+
+Add the folder, `src/state/store`, and the default file, `src/state/store/index.spec.js`. 
+
+Our Redux store will wrap up our state and provide three methods for manipulating state:
+
+* `getState` to retrieve the latest state from the store
+* `dispatch` to dispatch actions to the reducer, thus updating the state
+* `subscribe` to allow components to listen for updates to the state so they know when to re-render
+
+On the basis of this, we can write our test:
+
+```javascript
+import configureStore from '.'
+
+describe('state:store', () => {
+  describe('configureStore', () => {
+    it('creates a store', () => {
+      expect(configureStore()).toHaveProperty('getState')
+      expect(configureStore()).toHaveProperty('dispatch')
+      expect(configureStore()).toHaveProperty('subscribe')
+    })
+  })
+})
+```
+
+That fails, of course. Next, we'll create our store to make the test pass. In `src/state/store/index.js`, put:
+
+```javascript
+import { createStore } from 'redux'
+
+import { rootReducer } from '..'
+
+export default function configureStore () {
+  return createStore(rootReducer)
+}
+```
+
+And we'll add our store to our imports and exports in the `src/state/index.js` file, of course:
+
+```javascript
+import { squareClicked } from './actions'
+import { SQUARE_CLICKED } from './constants'
+import { initialState, rootReducer } from './reducers'
+import { getMoves } from './selectors'
+import configureStore from './store'
+
+export {
+  configureStore,
+  getMoves,
+  initialState,
+  rootReducer,
+  SQUARE_CLICKED,
+  squareClicked
+}
+```
+
+After checking that test coverage is 100%. We're good to go:
+
+```bash
+git add -A
+git commit -m "Add the store"
+git push
+```
