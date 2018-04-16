@@ -496,3 +496,114 @@ git add -A
 git commit -m "Add remaining snapshot tests"
 git push
 ```
+
+## Test coverage
+
+Jest has a built-in tool (Istanbul) that allows us to check our code to see how thorough our test coverage is. We can run it with the `--coverage` flag thus:
+
+```bash
+yarn test --coverage
+```
+
+This will run the tests and the coverage tool, then stop. We won't be left in watch mode, in other words.
+
+Here's what our output should look like currently:
+
+![First run coverage](./assets/first-run-coverage.png)
+
+As you can see, our `App`, `Board`, and `Square` components are all well tested. Our `index.js` file and the mysterious `registerServiceWorker.js` file, not so much.
+
+But if you check the `src/index.js` file you'll see that it's really kind of all-or-nothing. If everything else works, and the ReactDOM `render` method works, then it should work. So we're not going to bother with testing that file. As for the `src/registerServiceWorker.js` file, we won't test that either. But all that red looks awful, doesn't it? And our `src/components/index.js` file has nothing but imports and exports in it, so that's not much worth testing either.
+
+Let's take them out of the tests entirely. Update your `package.json` file to add these lines:
+
+```json
+  "jest": {
+    "collectCoverageFrom": [
+      "!src/registerServiceWorker.js",
+      "!src/index.js",
+      "!src/components/index.js",
+      "src/**/*.{js,jsx}",
+      "!<rootDir>/node_modules/"
+    ],
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ]
+  }
+```
+
+The `!` means no or not, so this says that the coverage tool should _ignore_ the `src/registerServiceWorker.js` file, the `src/index.js` file, the `src/components/index.js` file, and the `node_modules` folder, and that it _should_ check all the `js` or `jsx` files in `src` and all its subfolders.
+
+Your full `package.json` file should look like this now:
+
+```json
+{
+  "name": "tic-tac-toe",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "ramda": "^0.25.0",
+    "ramda-adjunct": "^2.6.0",
+    "react": "^16.3.1",
+    "react-dom": "^16.3.1",
+    "react-redux": "^5.0.7",
+    "react-router": "^4.2.0",
+    "react-scripts": "1.1.4",
+    "redux": "^3.7.2",
+    "redux-observable": "^0.18.0",
+    "rxjs": "^5.5.10",
+    "styled-components": "^3.2.5"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "format": "prettier-standard 'src/**/*js'",
+    "precommit": "lint-staged",
+    "eject": "react-scripts eject"
+  },
+  "lint-staged": {
+    "linters": {
+      "src/**/*.js": [
+        "prettier-standard",
+        "git add"
+      ]
+    }
+  },
+  "devDependencies": {
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
+    "enzyme-to-json": "^3.3.3",
+    "husky": "^0.14.3",
+    "jest-enzyme": "^6.0.0",
+    "jest-styled-components": "^5.0.1",
+    "lint-staged": "^7.0.4",
+    "prettier-standard": "^8.0.1",
+    "react-test-renderer": "^16.3.1"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "!src/registerServiceWorker.js",
+      "!src/index.js",
+      "!src/components/index.js",
+      "src/**/*.{js,jsx}",
+      "!<rootDir>/node_modules/"
+    ],
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ]
+  }
+}
+```
+
+Let's save that and re-run `yarn test --coverage`:
+
+![Clean coverage](./assets/clean-coverage.png)
+
+OK, we're good to go on tests for the moment. Let's do another commit:
+
+```bash
+git add -A
+git commit -m "Update the test coverage configuration"
+git push
+```

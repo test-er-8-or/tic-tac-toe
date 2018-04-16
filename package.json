@@ -41,5 +41,17 @@
     "lint-staged": "^7.0.4",
     "prettier-standard": "^8.0.1",
     "react-test-renderer": "^16.3.1"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "!src/registerServiceWorker.js",
+      "!src/index.js",
+      "!src/components/index.js",
+      "src/**/*.{js,jsx}",
+      "!<rootDir>/node_modules/"
+    ],
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ]
   }
 }
