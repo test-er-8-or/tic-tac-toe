@@ -447,7 +447,7 @@ At the command line (and with your project root folder as the working directory)
 
 ```bash
 yarn add ramda ramda-adjunct styled-components react-router redux react-redux redux-observable rxjs
-yarn add -D enzyme enzyme-adapter-react-16 enzyme-to-json jest-enzyme react-test-renderer
+yarn add -D enzyme enzyme-adapter-react-16 enzyme-to-json jest-enzyme jest-styled-components react-test-renderer
 ```
 
 That should install those libraries. Then we'll do another commit and push:
@@ -500,6 +500,7 @@ Your final `package.json` file should look like this (version numbers may vary):
     "enzyme-to-json": "^3.3.3",
     "husky": "^0.14.3",
     "jest-enzyme": "^6.0.0",
+    "jest-styled-components": "^5.0.1",
     "lint-staged": "^7.0.4",
     "prettier-standard": "^8.0.1",
     "react-test-renderer": "^16.3.1"
@@ -564,6 +565,10 @@ Makes our Enzyme snapshots prettier. You'll see.
 ### [jest-enzyme](https://github.com/FormidableLabs/enzyme-matchers)
 
 Makes Enzyme work better with [Jest](https://facebook.github.io/jest/), which is what we'll be using for our tests.
+
+### [jest-styled-components](https://github.com/styled-components/jest-styled-components)
+
+Jest utilities for working with Styled Components
 
 ### [react-test-renderer](https://reactjs.org/docs/test-renderer.html)
 
