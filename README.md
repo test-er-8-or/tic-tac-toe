@@ -445,3 +445,555 @@ git add -A
 git commit -m "Add the store"
 git push
 ```
+
+-----
+
+## Connecting our components
+
+Now that we've got the state management ready to go&mdash;we have a `squareClicked` action, a `rootReducer` to update the state, a `getMoves` selector to extract the `moves` array from the state, and a `store` to roll it all up into one, we need to pass the store to our components. Rather than pass it in as a prop and then pass it down the component tree, we'll use the React Context to put it into the "context" where it can be extracted at any point in the hierarchy. And we'll use `react-redux` and some [higher-order components](https://reactjs.org/docs/higher-order-components.html) to simplify it all.
+
+First we need to import our store into the context. We'll use a `react-redux` provided higher-order component (HOC) called [Provider](https://github.com/reactjs/redux/blob/master/docs/basics/UsageWithReact.md#passing-the-store) to wrap our `App` component and inject the store.
+
+Open the `src/index.js` file and make it look like this:
+
+```javascript
+import React from 'react'
+import { render } from 'react-dom'
+import { Provider } from 'react-redux'
+
+import { App } from './components'
+import { configureStore } from './state'
+import registerServiceWorker from './registerServiceWorker'
+
+const store = configureStore()
+
+render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById('root')
+)
+registerServiceWorker()
+```
+
+We:
+
+* Import the `<Provider>` higher-order component from `react-redux`
+* Import our `configureStore` function from our `state` folder
+* Use `configureStore` to create our store
+* Wrap the `<App />` component in our `<Provider>` and inject the store
+
+The `<Provider>` does the rest. We can now access the store in our components by `connect`-ing them.
+
+Now we will connect our `App` component to the store. Here's what our `src/components/App/index.js` file currently looks like:
+
+```javascript
+import React from 'react'
+import styled from 'styled-components'
+import { times } from 'ramda'
+import { isUndefined } from 'ramda-adjunct'
+
+import { Board, Square } from '..'
+import { getPlayer } from '../../utilities'
+
+function makeSquares (moves) {
+  return times(square => {
+    const player = getPlayer(square, moves)
+
+    return isUndefined(player) ? (
+      <Square
+        key={square}
+        index={square}
+        handleClick={() => console.log(`Square ${square}`)}
+      />
+    ) : (
+      <Square key={square} index={square} player={player} />
+    )
+  }, 9)
+}
+
+const StyledApp = styled.div`
+  display: grid;
+  font-family: 'Verdana', sans-serif;
+  grid-template-areas: 'board';
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+`
+
+export default function App ({ moves = [] }) {
+  return (
+    <StyledApp>
+      <Board>{makeSquares(moves)}</Board>
+    </StyledApp>
+  )
+}
+```
+
+We're going to use `react-redux` and its [connect](https://github.com/reactjs/redux/blob/master/docs/basics/UsageWithReact.md#implementing-container-components) function to "connect" our `App` to our store. So first let's import it:
+
+```javascript
+import { connect } from 'react-redux'
+```
+
+We're going to want to get our `moves` array out of the state. We created the `getMoves` selector for precisely this purpose. We're also going to want to dispatch `SQUARE_CLICKED` actions to our reducer, which is why we created the `squareClicked` action creator. So we need to import both:
+
+```javascript
+import { getMoves, squareClicked } from '../../state'
+```
+
+We'll also create two functions that we'll use with `connect` to map the `moves` array from our state to our props, and to map our `dispatch` method to a function that will use our `squareClicked` action creator and `dispatch` to update the state&mdash;a function we'll inject into our `App` component as a prop as well.
+
+To do this we create two functions. The first, intended to map the state to various props, we'll call `mapStateToProps`. You can call it whatever you want, but this is the convention. Here is our version:
+
+```javascript
+function mapStateToProps (state) {
+  return {
+    moves: getMoves(state)
+  }
+}
+```
+
+As you can see, it simply takes the state (passed to it by the `connect` method) and extracts the `moves` array, which it returns as a `moves` prop. The `connect` method will inject this prop into our `App` for us. It will also `subscribe` our component to the store so that it rerenders whenever the state is updated. Nice!
+
+Then we'll create a function, call it `mapDispatchToProps` to inject a `markSquare` prop. `markSquare` will be a function that takes the index of the Square, uses the `squareClicked` action creator to create our `SQUARE_CLICKED` action, and the dispatches it to the store to update the state. From within `App` we'll be able to call `props.markSquare` and pass it the Square index to add it to our `moves` array. Wait until you see this in action!
+
+Here is our `mapDispatchToProps` function:
+
+```javascript
+function mapDispatchToProps (dispatch) {
+  return {
+    markSquare: square => dispatch(squareClicked(square))
+  }
+}
+```
+
+Again, it's pretty simple! The `connect` function will pass the store's `dispatch` method to our `mapDispatchToProps` function, and our function will return a `markSquare` prop that can be called with the number of the Square (0 to 8) to dispatch a `SQUARE_CLICKED` action to the store with the number of the Square in the payload.
+
+Now we need to connect these to our `App`, and we'll make this connected version (called a "container") our default export:
+
+```javascript
+export default connect(mapStateToProps, mapDispatchToProps)(App)
+```
+
+Note that connect is called first with our two mapper functions, and that returns a new function that we call with our component to wrap it.
+
+We've made our `App` container the new default export, so we'll change the unwrapped `App` component just a named export. We'll also grab both of our injected props and we'll pass them along to the `makeSquares` function:
+
+```javascript
+export function App ({ markSquare, moves }) {
+  return (
+    <StyledApp>
+      <Board>{makeSquares(markSquare, moves)}</Board>
+    </StyledApp>
+  )
+}
+```
+
+As you can see, wrapping our `App` with the `connect` method is fairly simple. We can use a `mapStateToProps` function to pull things out of our state and inject them as props, and we can use a `mapDispatchToProps` function to provide functions as props that will permit our `App` component to update the state. This turns our "component" into a "container" for state.
+
+Now we have to make use of these new props. We already wired up our `moves` array, but we need to use `markSquare` as our new click handler. Let's make our `makeSquares` function look like this:
+
+```javascript
+function makeSquares (markSquare, moves = []) {
+  return times(square => {
+    const player = getPlayer(square, moves)
+
+    return isUndefined(player)
+      ? <Square
+        key={square}
+        index={square}
+        handleClick={() => markSquare(square)}
+        />
+      : <Square key={square} index={square} player={player} />
+  }, 9)
+}
+```
+
+We take the `markSquare` function and create a click handler for each Square that calls it with the number of the Square. This is not the most efficient way to do this, performance-wise, because each time our board is re-rendered, it will recreate these handler functions. But with only nine squares, this is a minor hit. Still, it might be worth refactoring to move the handlers further down in the mix, or to create them only once when the component is first loaded.
+
+Now our `src/components/App/index.js` file should look like this:
+
+```javascript
+import React from 'react'
+import styled from 'styled-components'
+import { times } from 'ramda'
+import { isUndefined } from 'ramda-adjunct'
+import { connect } from 'react-redux'
+
+import { Board, Square } from '..'
+import { getMoves, squareClicked } from '../../state'
+import { getPlayer } from '../../utilities'
+
+function makeSquares (markSquare, moves = []) {
+  return times(square => {
+    const player = getPlayer(square, moves)
+
+    return isUndefined(player)
+      ? <Square
+        key={square}
+        index={square}
+        handleClick={() => markSquare(square)}
+        />
+      : <Square key={square} index={square} player={player} />
+  }, 9)
+}
+
+const StyledApp = styled.div`
+  display: grid;
+  font-family: 'Verdana', sans-serif;
+  grid-template-areas: 'board';
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+`
+
+export function App ({ markSquare, moves }) {
+  return (
+    <StyledApp>
+      <Board>{makeSquares(markSquare, moves)}</Board>
+    </StyledApp>
+  )
+}
+
+function mapStateToProps (state) {
+  return {
+    moves: getMoves(state)
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    markSquare: square => dispatch(squareClicked(square))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)
+
+```
+
+When we try to run our tests, however, we get an error that looks like this:
+
+![Container test fails](./assets/container-test-fail.png)
+
+Why this error? It's because we changed our default export to the _containerised_ version of our App. The tests are trying to run this version, but without injecting a store, mock or otherwise. That's just not going to work.
+
+There is a lot of discussion about what to test when working with containers. We could mock up a store and test the containerised version. Or we could just test our mapper functions, snapshot test the component, and let it go at that. We'll do that here to keep things simple, but if you want to mock the store and test the container, check out [redux-mock-store](http://arnaudbenard.com/redux-mock-store/).
+
+Now let's change our `src/components/App/index.spec.js` file to import our component `App`, as well as our various functions, instead of the container `App`:
+
+```javascript
+import { App } from '.'
+```
+
+Now if we run our coverage tests (`yarn test --coverage`), we get no errors, but we find that our `App` test suite is missing quite a few tests:
+
+![App test suite coverage](./assets/app-test-suite-coverage.png)
+
+We'll hold off on updating those tests until we're sure this is what we want. For now, let's run `yarn start` and test it in the browser. Then try clicking on various squares. You should see the following:
+
+* The first square you click on gets a red X
+* Clicking on it again does nothing (the cursor is no longer a pointer, either)
+* The next square you click on gets a green O
+* Play alternates between X and O
+* Play can continue until all squares are full _even if a player won one or more moves ago_
+
+We'll that's pretty good for now. But what's really happening on each click? There are tools to help us find out. We'll use Chrome's [React Developer Tools](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi) extension. Once installed, we can open the Developer's console and click on the "React" tab. Then reload the page. This tab shows us the hierarchy of our React components and is worth a class or two in its own right.
+
+At the top of the React Developer Tools pane you should see a "highlight updates" checkbox. Make sure it's checked:
+
+![Highlighting updates](./assets/highlight-updates.png)
+
+Now click on a few squares and watch what happens. See how the board outlines in blue, including _each individual square?_ That tells us that on every click, _the entire board and all squares are re-rendering. That's going to make things slow. Really, we only want the square we've clicked to update, right? So how are we going to make that work?
+
+![Everything rerenders!](./assets/everything-rerenders.gif)
+
+To fix this, we'll need to move the point where we tap into the props down in the component hierarchy. Let's move it to where it belongs&mdash;in the Square.
+
+Let's begin by stripping the `App` down to the bare minimum. We'll just have it return nine squares, each with an `index` set to the square number (0, 1, 2, etc.). We don't need to import `connect` or our action creator or our selector or our `getPlayer` utility function: we'll do all that in the individual square.
+
+Here is what `src/components/App/index.js` should look like now:
+
+```javascript
+import React from 'react'
+import styled from 'styled-components'
+import { times } from 'ramda'
+
+import { Board, Square } from '..'
+
+const StyledApp = styled.div`
+  display: grid;
+  font-family: 'Verdana', sans-serif;
+  grid-template-areas: 'board';
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+`
+
+export default function App () {
+  return (
+    <StyledApp>
+      <Board>
+        {times(square => <Square key={square} index={square} />, 9)}
+      </Board>
+    </StyledApp>
+  )
+}
+```
+
+So much simpler! We'll also need to change our `src/components/App/index.spec.js` file to import the default export. And we only need one snapshot as the `App` will never rerender! Here is the simplified code:
+
+```javascript
+import React from 'react'
+import { shallow } from 'enzyme'
+
+import App from '.'
+
+describe('components:App', () => {
+  it('renders the App with a blank game board and nine squares', () => {
+    expect(toJson(shallow(<App />).dive())).toMatchSnapshot()
+  })
+})
+```
+
+Run the tests and update the snapshots with `u`, and they should all pass. Then run the coverage. We're back to 100%!
+
+Adding all that `connect` code to our `App` component made it pretty big and unwieldy. There is an alternative. We can keep our "container" separate from the "component" it wraps. Let's try that. Create a new folder called `src/containers` and a file, `src/containers/index.js`, then a subfolder, `src/containers/Square`, and a file, `src/containers/Square/index.js`.
+
+In `src/containers/Square/index.js`, we'll import our `Square` component from the components folder, and our `connect` function from `react-redux`. We'll also need our `getMoves` selector and the `squareClicked` action creator from our `src/state` folder, as well as the `getPlayer` utility function from our `src/utilities` folder:
+
+```javascript
+import { connect } from 'react-redux'
+
+import Square from '../../components/Square'
+import { getMoves, squareClicked } from '../../state'
+import { getPlayer } from '../../utilities'
+```
+
+Next, we'll create a `mapStateToProps` function to get the `moves` array out of the state, _and then we'll use `getPlayer` to figure out the player and will inject that value into the `Square`:
+
+```javascript
+function mapStateToProps (state, { index }) {
+  const moves = getMoves(state)
+
+  return {
+    player: getPlayer(index, moves)
+  }
+}
+```
+
+Here we destructure the `index` from the Square's `props` (the `props` are the second argument provided by `connect` to the `mapStateToProps` function). Then we use the `getMoves` selector to extract the `moves` array. Finally, we use `getPlayer` to determine the player using the index of this Square and the list of moves, and we inject that into the `Square` component as a `player` prop.
+
+Now we need to create our `handleClick` event handler prop. We'll use `mapDispatchToProps` and our `squareClicked` action creator:
+
+```javascript
+function mapDispatchToProps (dispatch, { index }) {
+  return {
+    handleClick: () => dispatch(squareClicked(index))
+  }
+}
+```
+
+`handleClick` is a function that takes no parameters (as an event handler, it will get an event object, but we don't need it) and then uses the `squareClicked` action creator and the `index` of the Square to create a `SQUARE_CLICKED` action and finally dispatches it to the store so the state can be updated by the reducer.
+
+To finish it up, we wrap our state management around the `Square` using `connect`. Here is our final container (`src/containers/Square/index.js`):
+
+```javascript
+import { connect } from 'react-redux'
+
+import Square from '../../components/Square'
+import { getMoves, squareClicked } from '../../state'
+import { getPlayer } from '../../utilities'
+
+function mapStateToProps (state, { index }) {
+  const moves = getMoves(state)
+
+  return {
+    player: getPlayer(index, moves)
+  }
+}
+
+function mapDispatchToProps (dispatch, { index }) {
+  return {
+    handleClick: () => dispatch(squareClicked(index))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Square)
+```
+
+One last thing. Let's clean up the `src/components/Square/index.js` component so we only pass what's needed:
+
+```javascript
+import React from 'react'
+import styled from 'styled-components'
+import { isUndefined } from 'ramda-adjunct'
+
+const StyledSquare = styled.div`
+  border-color: hsla(0, 0%, 0%, 0.2);
+  border-style: solid;
+  border-width: 0 ${({ index }) => (index % 3 === 2 ? 0 : '2px')}
+    ${({ index }) => (index < 6 ? '2px' : 0)} 0;
+  color: ${({ player }) => (player === 'x' ? 'hsla(6, 59%, 50%, 1)' : 'hsla(145, 63%, 32%, 1)')};
+  cursor: ${({ onClick }) => (isUndefined(onClick) ? 'default' : 'pointer')}
+  font-size: 16vh;
+  font-weight: bold;
+  line-height: 20vh;
+  text-align: center;
+  text-transform: uppercase;
+`
+
+export default function Square ({ handleClick, index, player }) {
+  return isUndefined(player)
+    ? <StyledSquare index={index} onClick={handleClick} />
+    : <StyledSquare index={index} player={player}>{player}</StyledSquare>
+}
+```
+
+If we run the app now and check our React Dev Tools to see what rerenders on each click, we find that only the clicked Square rerenders. That's much nicer!
+
+![Square only rerenders](./assets/square-only-rerender.gif)
+
+So far so good. What happens when we check our test coverage?
+
+![Container coverage bad](./assets/container-coverage-bad.png)
+
+Whoops. Let's add our `src/containers/index.js` file to the skip list in `package.json`:
+
+```json
+"collectCoverageFrom": [
+  "!src/registerServiceWorker.js",
+  "!src/index.js",
+  "!src/components/index.js",
+  "!src/containers/index.js",
+  "!src/state/index.js",
+  "!src/utilities/index.js",
+  "src/**/*.{js,jsx}",
+  "!<rootDir>/node_modules/"
+],
+```
+
+That settles that. Now, how do we test a container?
+
+As it turns out, there is a lot of controversy around this. One way is to mock the store with something like [redux-mock-store](http://arnaudbenard.com/redux-mock-store/). Let's create a `src/containers/Square/index.spec.js` file and see what we can do with it.
+
+First, we'll need to import our mock store's `configureStore` method from `redux-mock-store`, the `Square` container, our `initialState`, and our `SQUARE_CLICKED` constant:
+
+```javascript
+import React from 'react'
+import { shallow } from 'enzyme'
+import configureStore from 'redux-mock-store'
+
+import Square from '.'
+import { initialState, SQUARE_CLICKED } from '../../state'
+```
+
+Next, we'll create the mockStore:
+
+```javascript
+const mockStore = configureStore()
+```
+
+Now let's test that our `mapStateToProps` and `mapDispatchToProps` functions are doing what they're supposed to do:
+
+```javascript
+describe('containers:Square', () => {
+  it(`maps state and dispatch to props`, () => {
+    const square = 4
+    const store = mockStore({ moves: [0, 3, square] })
+    const wrapper = shallow(<Square index={square} store={store} />)
+
+    expect(wrapper.props()).toEqual(
+      expect.objectContaining({
+        player: 'x',
+        handleClick: expect.any(Function)
+      })
+    )
+  })
+})
+```
+
+We initialise the mockStore with a state containing a `moves` array with our square's number in the third position (so an X). We pass our mock store in as a prop, which gets around having to import `<Provider>` and wrap our `<Square>`. Then we check that the props on our `Square` container have the correct `player` prop, and include a `handleClick` function.
+
+This passes. Now we know that our `player` and `handleClick` functions are being injected properly.
+
+Let's add another test to check that the `handleClick` function correctly dispatches the `SQUARE_CLICKED` action:
+
+```javascript
+it(`maps handleClick to dispatch ${SQUARE_CLICKED} action`, () => {
+  const square = 4
+  const store = mockStore(initialState)
+
+  store.dispatch = jest.fn()
+
+  const wrapper = shallow(<Square index={square} store={store} />)
+
+  wrapper.dive().props().onClick()
+
+  expect(store.dispatch).toHaveBeenCalledWith({
+    type: SQUARE_CLICKED,
+    payload: {
+      square
+    }
+  })
+})
+```
+
+Here we create the store again with just our `initialState` (we aren't worried about state changes). Then we mock our store's `dispatch` function with a Jest mock function. We can check later if this function has been called and what argument(s) was provided. We create our shallow wrapper, then `dive()` into it to grab the `StyledSquare` component. Our `handleClick` function has been passed to its `onClick` prop, so we can grab the props with `props()`, and then call `onClick()` directly. This should dispatch an action to our `Jest.fn()` mock function.
+
+Finally, we check the mock function (`store.dispatch`) to see if it has been called with the correct `type` and `payload`. Run the tests and it works!
+
+And if we run `yarn test --coverage`, we get:
+
+![Full container coverage](./assets/full-container-coverage.png)
+
+Beauty! 
+
+Here's our final `src/containers/Square/index.spec.js`:
+
+```javascript
+import React from 'react'
+import { shallow } from 'enzyme'
+import configureStore from 'redux-mock-store'
+
+import Square from '.'
+import { initialState, SQUARE_CLICKED } from '../../state'
+
+const mockStore = configureStore()
+
+describe('containers:Square', () => {
+  it(`maps state and dispatch to props`, () => {
+    const square = 4
+    const store = mockStore({ moves: [0, 3, square] })
+    const wrapper = shallow(<Square index={square} store={store} />)
+
+    expect(wrapper.props()).toEqual(
+      expect.objectContaining({
+        player: 'x',
+        handleClick: expect.any(Function)
+      })
+    )
+  })
+
+  it(`maps handleClick to dispatch ${SQUARE_CLICKED} action`, () => {
+    const square = 4
+    const store = mockStore(initialState)
+
+    store.dispatch = jest.fn()
+
+    const wrapper = shallow(<Square index={square} store={store} />)
+
+    wrapper.dive().props().onClick()
+
+    expect(store.dispatch).toHaveBeenCalledWith({
+      type: SQUARE_CLICKED,
+      payload: {
+        square
+      }
+    })
+  })
+})
+```

@@ -40,13 +40,15 @@
     "jest-styled-components": "^5.0.1",
     "lint-staged": "^7.0.4",
     "prettier-standard": "^8.0.1",
-    "react-test-renderer": "^16.3.1"
+    "react-test-renderer": "^16.3.1",
+    "redux-mock-store": "^1.5.1"
   },
   "jest": {
     "collectCoverageFrom": [
       "!src/registerServiceWorker.js",
       "!src/index.js",
       "!src/components/index.js",
+      "!src/containers/index.js",
       "!src/state/index.js",
       "!src/utilities/index.js",
       "src/**/*.{js,jsx}",
