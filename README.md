@@ -1,18 +1,24 @@
 # Setup
 
+**Please install the following software _before_ attending the class.** We will not have time to work with you individually or to wait while you install software during the class&mdash;especially if many people are attempting to download simultaneously. If you really can't get everything installed&mdash;even after searching for help online&mdash;then please contact us through Summer of Tech and we'll try to help.
+
+**For the best masterclass experience**, take the time to get everything installed correctly and make sure it's running properly. We're, like, serious about this.
+
+**Note:** If you don't want to set everything up on your own laptop, or if your laptop is a bit old, or you'd just rather work online, then you can follow [these instructions for using CodeSandbox.io](./code-sandbox-README.md). We recommend signing in with a GitHub account (and registering with GitHub if you don't already have one).
+
 If you have access to a Mac (or a Linux laptop), you'll find this process much easier. But if you must use Windows, you'll find plenty of help online, so don't despair. Windows, especially Windows 10, has made working with Node much easier.
 
 That said, our demo will performed with a Mac.
 
-### Node
+## Node
 
 First and foremost, you must have [node.js](https://nodejs.org/en/) installed. We run the Current version so it is best if you do, too. (That is, don't install the LTS version unless you have to.)
 
-### Yarn
+## Yarn
 
 Once you have node.js installed, install [yarn](https://yarnpkg.com/en/docs/install). We'll be using yarn throughout the demo, so it will make it easier for you. However, if you're very familiar with **npm**, then you're welcome to use it instead. But why not give Yarn a try?
 
-### An IDE or code editor
+## An IDE or code editor
 
 You'll need some way to write and edit code. We'll be using [Visual Studio Code](https://code.visualstudio.com/), the most popular code editor, and we highly recommend that you do, too, unless you are already very comfortable with another editor (e.g, Atom, Sublime Text). An IDE is really overkill for what we have planned, but if you can't live without one, then that's OK, too.
 
@@ -20,19 +26,19 @@ Note: you don't have to uninstall or give up your favourite editor to use VSCode
 
 We'll be using a few extensions for VSCode during the class. We recommend that you install them, too. There are typically equivalents available for other code editors/IDEs if you're sticking with some other editor. Do a search.
 
-### Access to a terminal (console)
+## Access to a terminal (console)
 
 If you're using Linux, you're probably very familiar with the terminal and the command line. If you're on a Mac, you can find it in the Applications > Utilities folder, but we recommend installing the wonderful [iTerm2](https://iterm2.com/). If you're on Windows, things get a bit trickier. We recommend [hyper](https://hyper.is/) from the wonderful folks at [Zeit](https://zeit.co/). We'll explain all the commands you'll need, so no worries there.
 
 You could also use the console built in to VSCode (or your preferred IDE/editor). But whatever you use, _make sure you have a working console_ (you can't complete these instructions without one).
 
-### ESLint
+## ESLint
 
 We'll be using ESLint to check our code syntax. Wikipedia defines linter or lint thus: _tools that analyse source code to flag programming errors, bugs, stylistic errors, and suspicious constructs_. ESLint will help you to write better code.
 
 VSCode has an [ESLint extension](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint), as do most code editors.
 
-### Prettier
+## Prettier
 
 We'll also be using a code formatter to format our code to [JavaScript Standard Style](https://standardjs.com/). This keeps our code style consistent across files and applications and makes it easier for others to read and understand our code.
 
@@ -40,11 +46,11 @@ VSCode has a [Prettier-standard extension](https://marketplace.visualstudio.com/
 
 You can get by without the linter and formatter, but you'll probably be much happier with them. Just sayin'.
 
-### Babel JavaScript
+## Babel JavaScript
 
 We're going to be using the hottest, newest JavaScript code to write our application, because, hey, we rock! We want our editor to highlight our syntax properly. We'll be using the Babel "transpiler" (don't ask) to convert our super-hot, ultra-modern code back to the stone age code used by most browsers. (Only slightly joking there.) So let's add an extension to make it easier: [Babel Javascript](https://marketplace.visualstudio.com/items?itemName=mgmcdermott.vscode-language-babel).
 
-### Git and GitHub
+## Git and GitHub
 
 You can skip this step if you just want to work locally on your own computer, but if you want us to look at your code, you'll need to put a copy online. The best way to do this (and to provide for [version control](https://en.wikipedia.org/wiki/Version_control) of your code) is with Git and GitHub. As you can see if you're reading this, that's what we use.
 
@@ -68,7 +74,7 @@ git clone <paste-your-copied-url-here> && cd $_
 
 That will clone your repository and change your working directory (`cd`) to the root folder of your repository. If you type `ls` (list) and hit Enter you should see your README file. If you've installed VSCode, you can now type `code .` and Enter to open this folder in Visual Studio Code. If you're using another editor or IDE, open your project folder in that.
 
-### Create-react-app
+## Create-react-app
 
 In our masterclass, we'll be using Facebook's [create-react-app](https://git-scm.com/) to create a basic React application instantly. It's magic! Then we'll modify that code to create a two-player Tic-Tac-Toe game. Fun, eh?
 
@@ -122,7 +128,7 @@ Très chic, non?
 
 In your terminal, hold the Control key down and hit the C key to stop your application.
 
-### Makin' it pretty
+## Makin' it pretty
 
 `create-react-app` comes with ESLint already installed and configured. But we still need to install and configure `prettier-standard` if we're going to take advantage of automatic code formatting.
 
@@ -307,7 +313,7 @@ If anything is not working, check the code in this repository (particularly the 
 }
 ```
 
-### Committing our changes
+## Committing our changes
 
 If you're using Git and GitHub, then there's one last step. Let's "commit" our changes and push them up to GitHub.
 
@@ -335,7 +341,7 @@ You should see something like this:
 
 If you go to your repository on GitHub and reload the page, you should see all your changes. Nifty, eh?
 
-## Cleaning up the cruft
+# Cleaning up the cruft
 
 There's one more thing we can do to get ready for the masterclass. Facebook's `create-react-app` is nice, but it adds a lot of cruft that we don't need. For example, the animated logo.
 
@@ -439,7 +445,7 @@ It will look like this in the terminal:
 
 Check your code on GitHub by reloading the page and you should see all the latest changes there.
 
-## Adding a couple of utilities
+# Adding a couple of utilities
 
 We'll be using a very functional style of coding and the latest best practices for our Tic-Tac-Toe app. Why not? So we're going to add a few libraries that we'll need later. Let's do it now.
 
@@ -447,7 +453,7 @@ At the command line (and with your project root folder as the working directory)
 
 ```bash
 yarn add ramda ramda-adjunct styled-components react-router redux react-redux redux-observable rxjs
-yarn add -D enzyme enzyme-adapter-react-16 enzyme-to-json jest-enzyme react-test-renderer
+yarn add -D enzyme enzyme-adapter-react-16 enzyme-to-json jest-enzyme jest-styled-components react-test-renderer redux-mock-store
 ```
 
 That should install those libraries. Then we'll do another commit and push:
@@ -500,9 +506,11 @@ Your final `package.json` file should look like this (version numbers may vary):
     "enzyme-to-json": "^3.3.3",
     "husky": "^0.14.3",
     "jest-enzyme": "^6.0.0",
+    "jest-styled-components": "^5.0.1",
     "lint-staged": "^7.0.4",
     "prettier-standard": "^8.0.1",
-    "react-test-renderer": "^16.3.1"
+    "react-test-renderer": "^16.3.1",
+    "redux-mock-store": "^1.5.1"
   }
 }
 ```
@@ -511,60 +519,68 @@ Congratulations! You're ready to rock and roll with React and Tic-Tac-Toe. See y
 
 You can also get a head start by reading up on these utilities:
 
-### [ramda](http://ramdajs.com/)
+## [ramda](http://ramdajs.com/)
 
 Ramda gives us a host of powerful functions for manipulating data. The [Ramda docs](http://ramdajs.com/docs/) can take a little getting used to, but the examples help a lot. And the [Ramda REPL](http://ramdajs.com/repl/) is a great place to play around with Ramda. You can [bookmark your code](http://ramdajs.com/repl/?v=0.25.0#?const%20colours%20%3D%20%5B%27red%27%2C%20%27yellow%27%2C%20%27green%27%2C%20%27cyan%27%2C%20%27blue%27%2C%20%27magenta%27%5D%0A%0Aconst%20fourLetter%20%3D%20filter%28pipe%28length%2C%20equals%284%29%29%29%0A%0AfourLetter%28colours%29) and come right back to it later or send the link to a friend.
 
-### [ramda-adjunct](https://char0n.github.io/ramda-adjunct/)
+## [ramda-adjunct](https://char0n.github.io/ramda-adjunct/)
 
 Ramda-adjunct adds a wealth of useful functions to Ramda so we don't have to rewrite them ourselves.
 
-### [styled-components](https://www.styled-components.com/)
+## [styled-components](https://www.styled-components.com/)
 
 Makes it easy for us to encapsulate our CSS styles in our components, and theme them as well.
 
 You might also consider watching this [talk about styled-components](https://www.youtube.com/watch?v=bIK2NwoK9xk).
 
-### [react-router](https://reacttraining.com/react-router/)
+## [react-router](https://reacttraining.com/react-router/)
 
 "React Router is a collection of navigational components that compose declaratively with your application."
 
-### [redux](https://redux.js.org/)
+## [redux](https://redux.js.org/)
 
 Redux is a predictable state container for JavaScript apps.
 
-### [react-redux](https://github.com/reactjs/react-redux)
+## [react-redux](https://github.com/reactjs/react-redux)
 
 The React bindings for Redux. (Makes Redux and React work together easily.)
 
 For the curious, [a video on react-redux by Dan Abramov](https://www.youtube.com/watch?v=VJ38wSFbM3A)
 
-### [redux-observable](https://redux-observable.js.org/)
+## [redux-observable](https://redux-observable.js.org/)
 
 "RxJS 5-based middleware for Redux. Compose and cancel async actions to create side effects and more."
 
-### [rxjs](http://reactivex.io/rxjs/)
+## [rxjs](http://reactivex.io/rxjs/)
 
 "RxJS is a library for reactive programming using Observables, to make it easier to compose asynchronous or callback-based code."
 
 yarn add -D enzyme enzyme-adapter-react-16 enzyme-to-json jest-enzyme react-test-renderer
 
-### [enzyme](http://airbnb.io/enzyme/)
+## [enzyme](http://airbnb.io/enzyme/)
 
 "Enzyme is a JavaScript Testing utility for React that makes it easier to assert, manipulate, and traverse your React Components' output."
 
-### [enzyme-adapter-react-16](https://github.com/airbnb/enzyme/tree/master/packages/enzyme-adapter-react-16)
+## [enzyme-adapter-react-16](https://github.com/airbnb/enzyme/tree/master/packages/enzyme-adapter-react-16)
 
 Just something Enzyme needs to work with React version 16. Don't worry about it.
 
-### [enzyme-to-json](https://github.com/adriantoine/enzyme-to-json)
+## [enzyme-to-json](https://github.com/adriantoine/enzyme-to-json)
 
 Makes our Enzyme snapshots prettier. You'll see.
 
-### [jest-enzyme](https://github.com/FormidableLabs/enzyme-matchers)
+## [jest-enzyme](https://github.com/FormidableLabs/enzyme-matchers)
 
 Makes Enzyme work better with [Jest](https://facebook.github.io/jest/), which is what we'll be using for our tests.
 
-### [react-test-renderer](https://reactjs.org/docs/test-renderer.html)
+## [jest-styled-components](https://github.com/styled-components/jest-styled-components)
+
+Jest utilities for working with Styled Components
+
+## [react-test-renderer](https://reactjs.org/docs/test-renderer.html)
 
 Allows us to "render" our React components for testing without having to have a browser. Much faster.
+
+## [redux-mock-store](http://arnaudbenard.com/redux-mock-store/)
+
+"A mock store for your testing your redux async action creators and middleware."
