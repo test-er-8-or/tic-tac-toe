@@ -6845,6 +6845,10 @@ reduce-function-call@^1.0.1:
   dependencies:
     balanced-match "^0.4.2"
 
+redux-devtools-extension@^2.13.2:
+  version "2.13.2"
+  resolved "http://drlnpm02.nz.thenational.com:8081/repository/npm/redux-devtools-extension/-/redux-devtools-extension-2.13.2.tgz#e0f9a8e8dfca7c17be92c7124958a3b94eb2911d"
+
 redux-mock-store@^1.5.1:
   version "1.5.1"
   resolved "http://drlnpm02.nz.thenational.com:8081/repository/npm/redux-mock-store/-/redux-mock-store-1.5.1.tgz#fca4335392e66605420b5559fe02fc5b8bb6d63c"
