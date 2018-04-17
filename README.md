@@ -452,7 +452,7 @@ We'll be using a very functional style of coding and the latest best practices f
 At the command line (and with your project root folder as the working directory), type the following and hit the Enter key:
 
 ```bash
-yarn add ramda ramda-adjunct styled-components react-router redux react-redux redux-observable rxjs
+yarn add ramda ramda-adjunct styled-components react-router redux react-redux redux-observable rxjs redux-devtools-extension
 yarn add -D enzyme enzyme-adapter-react-16 enzyme-to-json jest-enzyme jest-styled-components react-test-renderer redux-mock-store
 ```
 
@@ -480,6 +480,7 @@ Your final `package.json` file should look like this (version numbers may vary):
     "react-router": "^4.2.0",
     "react-scripts": "1.1.4",
     "redux": "^3.7.2",
+    "redux-devtools-extension": "^2.13.2",
     "redux-observable": "^0.18.0",
     "rxjs": "^5.5.10",
     "styled-components": "^3.2.5"
@@ -584,3 +585,7 @@ Allows us to "render" our React components for testing without having to have a 
 ## [redux-mock-store](http://arnaudbenard.com/redux-mock-store/)
 
 "A mock store for your testing your redux async action creators and middleware."
+
+## [redux-devtools-extension](https://github.com/zalmoxisus/redux-devtools-extension)
+
+The coolest thing ever for tracking your application state. Time travelling!
