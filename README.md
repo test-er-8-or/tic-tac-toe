@@ -997,3 +997,28 @@ describe('containers:Square', () => {
   })
 })
 ```
+
+## One last thing
+
+It would be nice to see what's happening in our state. The [redux-devtools-extension](http://extension.remotedev.io/) is just what we need. We added it way back during set up. Now let's put it to use. All we need is one little change in one file. In `src/state/store/index.js` we'll import the `devToolsEnhancer`, and then we'll use it to enhance the store: `createStore(rootReducer, devToolsEnhancer())`. Here's our new code:
+
+```javascript
+import { createStore } from 'redux'
+import { devToolsEnhancer } from 'redux-devtools-extension'
+
+import { rootReducer } from '..'
+
+export default function configureStore () {
+  return createStore(rootReducer, devToolsEnhancer())
+}
+```
+
+You'll need to install the Chrome or Firefox extension and use one of those browsers to see the Redux DevTools. Here's an example screenshot:
+
+![Redux DevTools](./assets/redux-devtools.png)
+
+```bash
+git add -A
+git commit -m "Add Redux DevTools"
+git push
+```
