@@ -10,6 +10,8 @@ If you have access to a Mac (or a Linux laptop), you'll find this process much e
 
 That said, our demo will performed with a Mac.
 
+**Very important note**: If you diverge from these instructions in any way and get stuck, we _may_ not be able to help you. There are too many things that could go wrong. So please, the first time through, follow instructions to the letter as much as possible. On a second or third time through (and we recommend you try this several times, digging deeper each time until it all comes clear to you), you can start experimenting. But first time thorugh, _by the book, please_.
+
 ## Node
 
 First and foremost, you must have [node.js](https://nodejs.org/en/) installed. We run the Current version so it is best if you do, too. (That is, don't install the LTS version unless you have to.)
