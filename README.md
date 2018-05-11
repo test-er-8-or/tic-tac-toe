@@ -417,6 +417,7 @@ describe('components:App', () => {
   it('renders the App with a game board and nine squares', () => {
     expect(toJson(shallow(<App />).dive())).toMatchSnapshot()
   })
+}) 
 ```
 
 Update the tests with `u` and check the `src/components/App/__snapshots__/index.spec.js.snap` file and you should see:
