@@ -315,15 +315,26 @@ If anything is not working, check the code in this repository (particularly the 
 }
 ```
 
-## Committing our changes
+## Afraid of Commitment?
 
 If you're using Git and GitHub, then there's one last step. Let's "commit" our changes and push them up to GitHub.
 
-First, you'll "stage" all the changes. That tells git to include them in the commit. You have to stage your changes before you can commit them:
+First let's see what files have been created or altered:
+```bash
+git status
+``` 
+
+You should see a list of the files similar to:
+![Git add, commmit, and push](./assets/status-before-add.png)
+
+
+Next, you'll "stage" all the changes. That tells git to include them in the commit. You have to stage your changes before you can commit them:
 
 ```bash
 git add -A
 ```
+
+You can run ```bash git status``` again to see the files are now green meaning they are staged and ready to commit.
 
 Then we'll commit them with a simple commit message:
 
