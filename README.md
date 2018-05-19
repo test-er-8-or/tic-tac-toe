@@ -68,7 +68,7 @@ Now you have a Git repository on GitHub! Donc professionnel!
 
 We'll want to "clone" a copy of your repository to your local computer so you can use it. So click the "Clone or Download" button, then click the clipboard (icon) button to copy the URL to the clipboard. It's easier to use clone with HTTPS so make sure this is selected. 
 
-[Terminal](#access-to-terminal)
+[Terminal](#access-to-a-terminal)
 You have a terminal app, right? (See above.) Open it and in a folder somewhere (we use a folder called Workspace in our home folder to organise our work), clone the repository with:
 
 ```bash
