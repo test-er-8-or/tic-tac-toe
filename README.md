@@ -334,7 +334,7 @@ Next, you'll "stage" all the changes. That tells git to include them in the comm
 git add -A
 ```
 
-You can run ```bash git status``` again to see the files are now green meaning they are staged and ready to commit.
+You can run ```git status``` again to see the files are now green, meaning they are staged and ready to commit.
 
 Then we'll commit them with a simple commit message:
 
@@ -368,7 +368,7 @@ In the `src` folder, delete the following files:
 * logo.svg
 * README.old.md
 
-Create a new folder called `components` in the `src` folder, then create an `App` folder inside the components folder, and, finally, move the `App.js` file into the `src/components/App` folder and rename it to `index.js`.
+Create a new folder called `components` in the `src` folder, then create an `App` folder inside the `components` folder, and, finally, move the `App.js` file into the `src/components/App` folder and rename it to `index.js`.
 
 Your folder and file structure should now look like this:
 
@@ -568,8 +568,6 @@ For the curious, [a video on react-redux by Dan Abramov](https://www.youtube.com
 ## [rxjs](http://reactivex.io/rxjs/)
 
 "RxJS is a library for reactive programming using Observables, to make it easier to compose asynchronous or callback-based code."
-
-yarn add -D enzyme enzyme-adapter-react-16 enzyme-to-json jest-enzyme react-test-renderer
 
 ## [enzyme](http://airbnb.io/enzyme/)
 
