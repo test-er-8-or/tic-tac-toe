@@ -8,13 +8,13 @@
 
 If you have access to a Mac (or a Linux laptop), you'll find this process much easier. But if you must use Windows, you'll find plenty of help online, so don't despair. Windows, especially Windows 10, has made working with Node much easier.
 
-That said, our demo will performed with a Mac.
+That said, our demo will be performed with a Mac.
 
-**Very important note**: If you diverge from these instructions in any way and get stuck, we _may_ not be able to help you. There are too many things that could go wrong. So please, the first time through, follow instructions to the letter as much as possible. On a second or third time through (and we recommend you try this several times, digging deeper each time until it all comes clear to you), you can start experimenting. But first time thorugh, _by the book, please_.
+**Very important note**: If you diverge from these instructions in any way and get stuck, we _may_ not be able to help you. There are too many things that could go wrong. So please, the first time through, follow instructions to the letter as much as possible. On a second or third time through (and we recommend you try this several times, digging deeper each time until it all becomes clear to you), you can start experimenting. But first time through, _by the book, please_.
 
 ## Node
 
-First and foremost, you must have [node.js](https://nodejs.org/en/) installed. We run the Current version so it is best if you do, too. (That is, don't install the LTS version unless you have to.)
+First and foremost, you must have [node.js](https://nodejs.org/en/) installed. We run the Current version so it is best if you do too. (That is, don't install the LTS version unless you have to.)
 
 ## Yarn
 
@@ -38,13 +38,13 @@ You could also use the console built in to VSCode (or your preferred IDE/editor)
 
 We'll be using ESLint to check our code syntax. Wikipedia defines linter or lint thus: _tools that analyse source code to flag programming errors, bugs, stylistic errors, and suspicious constructs_. ESLint will help you to write better code.
 
-VSCode has an [ESLint extension](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint), as do most code editors.
+VSCode has an [ESLint extension](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint), as do most code editors. Go ahead and install this now.
 
 ## Prettier
 
 We'll also be using a code formatter to format our code to [JavaScript Standard Style](https://standardjs.com/). This keeps our code style consistent across files and applications and makes it easier for others to read and understand our code.
 
-VSCode has a [Prettier-standard extension](https://marketplace.visualstudio.com/items?itemName=numso.prettier-standard-vscode). You can find similar extensions for other editors as well.
+VSCode has a [Prettier-standard extension](https://marketplace.visualstudio.com/items?itemName=numso.prettier-standard-vscode). You can find similar extensions for other editors as well. If you're using VSCode, install this now.
 
 You can get by without the linter and formatter, but you'll probably be much happier with them. Just sayin'.
 
@@ -66,7 +66,7 @@ Then check "Initialize this repository with a README". Under ".gitignore" select
 
 Now you have a Git repository on GitHub! Donc professionnel!
 
-We'll want to "clone" a copy of your repository to your local computer so you can use it. So click the "Clone or Download" button, then click the clipboard (icon) button to copy the URL to the clipboard.
+We'll want to "clone" a copy of your repository to your local computer so you can use it. So click the "Clone or Download" button, then click the clipboard (icon) button to copy the URL to the clipboard. It's easier to use clone with HTTPS so make sure this is selected. 
 
 You have a terminal app, right? (See above.) Open it and in a folder somewhere (we use a folder called Workspace in our home folder to organise our work), clone the repository with:
 
@@ -315,15 +315,26 @@ If anything is not working, check the code in this repository (particularly the 
 }
 ```
 
-## Committing our changes
+## Afraid of Commitment?
 
 If you're using Git and GitHub, then there's one last step. Let's "commit" our changes and push them up to GitHub.
 
-First, you'll "stage" all the changes. That tells git to include them in the commit. You have to stage your changes before you can commit them:
+First let's see what files have been created or altered:
+```bash
+git status
+``` 
+
+You should see a list of the files similar to:
+![Git add, commmit, and push](./assets/status-before-add.png)
+
+
+Next, you'll "stage" all the changes. That tells git to include them in the commit. You have to stage your changes before you can commit them:
 
 ```bash
 git add -A
 ```
+
+You can run ```git status``` again to see the files are now green, meaning they are staged and ready to commit.
 
 Then we'll commit them with a simple commit message:
 
@@ -357,7 +368,7 @@ In the `src` folder, delete the following files:
 * logo.svg
 * README.old.md
 
-Create a new folder called `components` in the `src` folder, then create an `App` folder inside the components folder, and, finally, move the `App.js` file into the `src/components/App` folder and rename it to `index.js`.
+Create a new folder called `components` in the `src` folder, then create an `App` folder inside the `components` folder, and, finally, move the `App.js` file into the `src/components/App` folder and rename it to `index.js`.
 
 Your folder and file structure should now look like this:
 
@@ -557,8 +568,6 @@ For the curious, [a video on react-redux by Dan Abramov](https://www.youtube.com
 ## [rxjs](http://reactivex.io/rxjs/)
 
 "RxJS is a library for reactive programming using Observables, to make it easier to compose asynchronous or callback-based code."
-
-yarn add -D enzyme enzyme-adapter-react-16 enzyme-to-json jest-enzyme react-test-renderer
 
 ## [enzyme](http://airbnb.io/enzyme/)
 
