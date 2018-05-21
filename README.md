@@ -1,602 +1,101 @@
-# Setup
+# Building a Tic-Tac-Toe application with React
 
-**Please install the following software _before_ attending the class.** We will not have time to work with you individually or to wait while you install software during the class&mdash;especially if many people are attempting to download simultaneously. If you really can't get everything installed&mdash;even after searching for help online&mdash;then please contact us through Summer of Tech and we'll try to help.
+This is a tutorial for building a Tic-Tac-Toe game with React, Redux, `redux-observable`, Rx.js, and more. We'll start simply, and continue building on the app, step by step, until we've created something quite powerful. Note: this is still a work-in-progress. [YMMV](https://en.wiktionary.org/wiki/your_mileage_may_vary#English).
 
-**For the best masterclass experience**, take the time to get everything installed correctly and make sure it's running properly. We're, like, serious about this.
+Each step of the tutorial is a different branch. We could have used tagged commits, but it's easier to go back and update branches as we discover typos and other errors. So branches it is.
 
-**Note:** If you don't want to set everything up on your own laptop, or if your laptop is a bit old, or you'd just rather work online, then you can follow [these instructions for using CodeSandbox.io](./code-sandbox-README.md). We recommend signing in with a GitHub account (and registering with GitHub if you don't already have one).
+To start the tutorial, begin with the [00-set-up](https://github.com/test-er-8-or/tic-tac-toe/tree/00-set-up) branch. Follow the instructions carefully. When you complete that branch, move on to the next branch, and then the next.
 
-If you have access to a Mac (or a Linux laptop), you'll find this process much easier. But if you must use Windows, you'll find plenty of help online, so don't despair. Windows, especially Windows 10, has made working with Node much easier.
+If you get to the end of a step (branch) and your code doesn't quite work and you've given up on trying to debug it, you can simply clone the next branch and start from there with a (hopefully) working copy of the application so far.
 
-That said, our demo will be performed with a Mac.
+There are a few drawbacks to this simple approach, but it works for now. Eventually, we'll move this tutorial to an actual learning management system, which will make it much easier to use.
 
-**Very important note**: If you diverge from these instructions in any way and get stuck, we _may_ not be able to help you. There are too many things that could go wrong. So please, the first time through, follow instructions to the letter as much as possible. On a second or third time through (and we recommend you try this several times, digging deeper each time until it all becomes clear to you), you can start experimenting. But first time through, _by the book, please_.
+We strongly recommend working with the real-world tools&mdash;GitHub, Visual Studio Code, iTerm2 or equivalent, etc.&mdash;but if you can't get them set up, we do also provide an easy way to complete the tutorial using [CodeSandbox.io](https://codesandbox.io/). Just follow our [CodeSandbox instructions](./code-sandbox-README.md).
 
-## Node
+## How to get the most out of this tutorial
 
-First and foremost, you must have [node.js](https://nodejs.org/en/) installed. We run the Current version so it is best if you do too. (That is, don't install the LTS version unless you have to.)
+This tutorial uses a modern method of learning called "Just-in-time learning" (JITL). The idea behind JITL is to learn only what you need to know, precisely when you need to know it, and to apply it immediately.
 
-## Yarn
+_This is very different from the way you have learned in the past_, and it may take some getting used to. Virtually all the instruction you've had in your life so far will most likely have been what we call "Just-in-_case_ learning" (JICL). Just-in-case learning means expending time, energy, and money learning things that you may never need, or won't need in the foreseeable future, because, well, _just in case_.
 
-Once you have node.js installed, install [yarn](https://yarnpkg.com/en/docs/install). We'll be using yarn throughout the demo, so it will make it easier for you. However, if you're very familiar with **npm**, then you're welcome to use it instead. But why not give Yarn a try?
+This is a tremendous waste, and it often exhausts novices because they don't know where to put their effort for the maximal return. They tend to take a shotgun approach, trying to learn a little bit of everything, and learning nothing very well. Often, they quit in frustration.
 
-## An IDE or code editor
+There are several other tools from the [Munat Methodology](https://github.com/PaperHat/munat-methodology) in use here. Let's discuss a few:
 
-You'll need some way to write and edit code. We'll be using [Visual Studio Code](https://code.visualstudio.com/), the most popular code editor, and we highly recommend that you do, too, unless you are already very comfortable with another editor (e.g, Atom, Sublime Text). An IDE is really overkill for what we have planned, but if you can't live without one, then that's OK, too.
+## Learn inductively not deductively
 
-Note: you don't have to uninstall or give up your favourite editor to use VSCode for this class. They can coexist peacefully!
+Begin with concrete examples, then abstract the principles, not the other way around. Stay as low on the tree of abstraction as you can.
 
-We'll be using a few extensions for VSCode during the class. We recommend that you install them, too. There are typically equivalents available for other code editors/IDEs if you're sticking with some other editor. Do a search.
+In this tutorial, we show you the code _first_, even though you may have no clue what it means or how it works. Type it into your own code (or copy and paste, but typing it will help you to learn it more rapidly) and _see how it works_. Once you see how it works, _then_ we'll explain it, but only what you really need to know.
 
-## Access to a terminal (console)
+## Learn outside-in
 
-If you're using Linux, you're probably very familiar with the terminal and the command line. If you're on a Mac, you can find it in the Applications > Utilities folder, but we recommend installing the wonderful [iTerm2](https://iterm2.com/). If you're on Windows, things get a bit trickier. We recommend [hyper](https://hyper.is/) from the wonderful folks at [Zeit](https://zeit.co/). We'll explain all the commands you'll need, so no worries there.
+Begin with the context and framework so you know where you are going, then fill in the detail.
 
-You could also use the console built in to VSCode (or your preferred IDE/editor). But whatever you use, _make sure you have a working console_ (you can't complete these instructions without one).
+Rather than learn a lot of little bits of code that eventually, someday, if you stick with it _might_ add up to a web application, we begin by generating the basic application right up front. Now you can see where we're going. Then we modify it little by little until it becomes the final product. We don't waste time explaining variables, loops, conditionals, etc.&mdash;these will become clear with regular use, and, _after you've seen them a few times_, we'll take a moment to point them out to you.
 
-## ESLint
+This means you're always oriented as to where you are and where you want to go, _even if you don't understand any of the details just yet_. Be patient. We'll get there.
 
-We'll be using ESLint to check our code syntax. Wikipedia defines linter or lint thus: _tools that analyse source code to flag programming errors, bugs, stylistic errors, and suspicious constructs_. ESLint will help you to write better code.
+## Favour skills over knowledge
 
-VSCode has an [ESLint extension](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint), as do most code editors. Go ahead and install this now.
+Skills require mentoring and practice, and practice makes permanent. Do it right the first time and every time. Knowledge is perishable and volatile and can be acquired instantly and the moment it is needed. Hello, Google!
 
-## Prettier
+The key to this tutorial is _repetition_. Go through it the first time just following along and typing (or copying and pasting) the code and getting an idea of what's involved and how it works, generally. Don't try to understand everything! Don't worry that you don't understand everything (_no one_ does)! Just get through the tutorial and make it work.
 
-We'll also be using a code formatter to format our code to [JavaScript Standard Style](https://standardjs.com/). This keeps our code style consistent across files and applications and makes it easier for others to read and understand our code.
+**Then** go through it _from scratch_ a second time. This time, take a bit more time to examine the code. Try to understand not only _what_ we did, but _how_ we did it. What do all these funny words really mean? They are not that hard to figure out&mdash;as long as you don't go down rabbit holes.
 
-VSCode has a [Prettier-standard extension](https://marketplace.visualstudio.com/items?itemName=numso.prettier-standard-vscode). You can find similar extensions for other editors as well. If you're using VSCode, install this now.
-
-You can get by without the linter and formatter, but you'll probably be much happier with them. Just sayin'.
-
-## Babel JavaScript
-
-We're going to be using the hottest, newest JavaScript code to write our application, because, hey, we rock! We want our editor to highlight our syntax properly. We'll be using the Babel "transpiler" (don't ask) to convert our super-hot, ultra-modern code back to the stone age code used by most browsers. (Only slightly joking there.) So let's add an extension to make it easier: [Babel Javascript](https://marketplace.visualstudio.com/items?itemName=mgmcdermott.vscode-language-babel).
-
-## Git and GitHub
-
-You can skip this step if you just want to work locally on your own computer, but if you want us to look at your code, you'll need to put a copy online. The best way to do this (and to provide for [version control](https://en.wikipedia.org/wiki/Version_control) of your code) is with Git and GitHub. As you can see if you're reading this, that's what we use.
-
-To use [Git](https://git-scm.com/), you'll need to install it locally. Then sign up for a [GitHub](https://github.com/join) account if you don't already have one. Then click "Start a Project", verify your email address, and sign in.
-
-Next, go to your profile and click on the "Repositories" tab, then click the bright green "New" button.
-
-Give your repository a name such as `tic-tac-toe`. Add a description, maybe "Tic-Tac-Toe game"? Just a suggestion.
-
-Then check "Initialize this repository with a README". Under ".gitignore" select "Node". You can choose a license if you want to. Finally, click the green "Create repository" button.
-
-Now you have a Git repository on GitHub! Donc professionnel!
-
-We'll want to "clone" a copy of your repository to your local computer so you can use it. So click the "Clone or Download" button, then click the clipboard (icon) button to copy the URL to the clipboard. It's easier to use clone with HTTPS so make sure this is selected. 
-
-You have a terminal app, right? (See above.) Open it and in a folder somewhere (we use a folder called Workspace in our home folder to organise our work), clone the repository with:
-
-```bash
-git clone <paste-your-copied-url-here> && cd $_
-```
-
-That will clone your repository and change your working directory (`cd`) to the root folder of your repository. If you type `ls` (list) and hit Enter you should see your README file. If you've installed VSCode, you can now type `code .` and Enter to open this folder in Visual Studio Code. If you're using another editor or IDE, open your project folder in that.
-
-## Create-react-app
-
-In our masterclass, we'll be using Facebook's [create-react-app](https://git-scm.com/) to create a basic React application instantly. It's magic! Then we'll modify that code to create a two-player Tic-Tac-Toe game. Fun, eh?
-
-You'll be using the command line for this installation (and to build your Tic-Tac-Toe app), so open your terminal/console.
-
-If you installed Yarn successfully, you can use it to install `create-react-app`:
-
-```bash
-yarn global add create-react-app
-```
-
-If you insist on sticking with `npm`, then use this:
-
-```bash
-npm i -g create-react-app
-```
-
-That installs `create-react-app` globally, so you can use it from the command line. Now let's create a scaffold for our Tic-Tac-Toe app.
-
-Did you create a Git repository and `cd` into the root folder above? If so, we'll use the current folder name (`.`) as the name of our app:
-
-```bash
-create-react-app .
-```
-
-Make sure your working directory is your Git repo root folder before you type that or your day will suddenly go suddenly very wrong.
-
-If you're not using Git, then you'll need to create the folder at the same time, then `cd` into it. We can do that like this:
-
-```bash
-create-react-app tic-tac-toe && cd $_
-```
-
-This will take a while. Make sure you're online because `create-react-app` will be downloading many dependencies from node. Hum a favourite song while you wait for it to finish its business.
-
-Once that process is complete, you should be able to see a host of files in your code editor. And you'll see something like this in your terminal:
-
-![Create-react-app success!](./assets/create-react-app.png)
-
-Now you can follow the instructions and use
-
-```bash
-yarn start
-```
-
-To start your new React app up. It should open the default home page in your browser at `http://localhost:3000/`. Here's what you can expect:
-
-![Default create-react-app home page](./assets/default-home.gif)
-
-Très chic, non?
-
-In your terminal, hold the Control key down and hit the C key to stop your application.
-
-## Makin' it pretty
-
-`create-react-app` comes with ESLint already installed and configured. But we still need to install and configure `prettier-standard` if we're going to take advantage of automatic code formatting.
-
-From within your project root folder, type the following in the terminal:
-
-```bash
-yarn add -D prettier-standard
-```
-
-Whistle a happy tune while the process completes. (Or not, if whistling is not your thing.)
-
-Got it installed? OK, we'll need to add a script to our application to permit us to run the `prettier-standard` formatter from the command line. We'll do this in the `package.json` file, which is where we configure our application. So open `package.json` in your editor and add a line for a `format` command like this:
-
-```json
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "format": "prettier-standard 'src/**/*.js'",
-    "eject": "react-scripts eject"
-  }
-```
-
-Save the changes to `package.json`. Now we can run our `prettier-standard` formatter any time we want from the command line. To test it, open `src/App.js` in your code editor. It should look like this:
+What do I mean by that? Take this line of code:
 
 ```javascript
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
-
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
-    );
-  }
-}
-
-export default App;
+import { map } from 'ramda'
 ```
 
-We're now going to run `prettier-standard` to reformat all our code to JavaScript Standard Style. You won't see a big change, but one obvious one is that JSS does not use semicolons, so all the semicolons at the ends of lines should disappear.
+What does that mean? Well, even if you've never done _any_ programming before, you probably know that "import" means to bring something in from outside. So 'ramda' must be something outside our code (in fact, it's a library of code we're borrowing functions from), and "map" must be something we'll need that isn't already available to us, so we have to go get it.
 
-In the terminal, type the following and hit Enter:
+But how does this really work?
 
-```bash
-yarn format
-```
-
-The output should look like this:
-
-![Running yarn format](./assets/yarn-format.png)
-
-And if you check your `src/App.js` file now, it should look like this:
-
-```javascript
-import React, { Component } from 'react'
-import logo from './logo.svg'
-import './App.css'
-
-class App extends Component {
-  render () {
-    return (
-      <div className='App'>
-        <header className='App-header'>
-          <img src={logo} className='App-logo' alt='logo' />
-          <h1 className='App-title'>Welcome to React</h1>
-        </header>
-        <p className='App-intro'>
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
-    )
-  }
-}
-
-export default App
-```
-
-Yeah! We don't need no semicolons! (Apologies to lovers of semicolons.)
-
-If you're using Git and GitHub, then we can set prettier to run every time we commit changes to our repository. This is optional! But it's nice, too.
-
-We'll use [`lint-staged`](https://github.com/okonet/lint-staged) and [`husky`](https://github.com/typicode/husky) to run `prettier-standard` and stage the changes every time we do a commit&mdash;before the commit runs. (If you're not familiar with Git and version control and don't know what a [commit](https://git-scm.com/docs/git-commit) is, don't worry. We'll cover that in the class.)
-
-First, we'll install our dependencies with yarn:
-
-```bash
-yarn add -D lint-staged
-yarn add -D husky --force
-```
-
-Note: the `--force` flag is necessary to force husky to work properly with yarn. Without it, the git hooks do not install properly. The `-D` flag installs these dependencies for "development" mode only&mdash;we won't need them in production.
-
-A Git "hook" is a way to "hook" into a git command and run some code either before or after the command runs. In this instance, we're going to hook into the `git commit` command and a) run `prettier-standard` to clean up our code, then b) run `git add` to stage any changes so they'll be included in the commit. Then we'll let the `git commit` go forward.
-
-We do this in our `package.json` file, which is where we configure and control our application. So open that file in your code editor and add the "precommit" line:
-
-```json
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "format": "prettier-standard 'src/**/*js'",
-    "precommit": "lint-staged",
-    "eject": "react-scripts eject"
-  },
-```
-
-This tells `husky` to listen for the `git commit` command and run `lint-staged` _before_ ("pre") the commit.
-
-Now we'll configure `lint-staged` to tell it what commands to run before each commit. In the same `package.json` file, add this below the scripts:
-
-```json
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "format": "prettier-standard 'src/**/*js'",
-    "precommit": "lint-staged",
-    "eject": "react-scripts eject"
-  },
-  "lint-staged": {
-    "linters": {
-      "src/**/*.js": [
-        "prettier-standard",
-        "git add"
-      ]
-    }
-  }
-```
+**WHO CARES?**
 
-This tells `lint-staged` to run the following commands on all files below the `src` folder: First, `prettier-standard`, which does the same thing that our `yarn format` command did, namely, cleans up all the code in the `src` folder.
+This is the most important thing to understand when doing this tutorial: **Don't dig any deeper than you need to!** It's enough to know that you're importing something called "map" from something called "ramda". Elsewhere, we've given you a link to the Ramda documentation that you can use _when you need to know how that works_. But that's not now, the first time you see this. So **don't** go running off to figure out what it means! Just leave it.
 
-Then `lint-staged` will run `git add`, which "stages" the modified files so they'll be included in the commit. After that, the commit runs as usual.
+Will you need to know how imports work, and how importing from a library such as Ramda differs from importing from your own JS files? Yes, of course you will. _But not right now!_ So _let it go_. Catch it on the second pass, or the third, or maybe never if it turns out you can get the job done without having to know it.
 
-In this manner we can automatically clean up our source code each and every time we commit changes to our repository. If you're not using a Git repository, skip this step, and just try to remember to run `yarn format` regularly before you deploy your code.
+This is the part of _Just-in time learning_ that is _so difficult_ for most of us. We've spent our entire lives believing that we have to memorise all sorts of things in order to be truly knowledgeable. That might have been true 50 years ago, but today it's demonstrably false! Almost everything you're going to learn in this tutorial will be obsolete in a year or two, if not in a few months or weeks! Every thing you memorise or learn that you don't need in that period is time, energy, and _money_ wasted (time === money). So just don't do it!
 
-And if you have all this working, then you're more than ready for our masterclass. Can't wait to see you there!
+The key to learning skills, such as programming, is _repetition_. If you need to remember something, it will be because you need to use it all the time, and if you use something all the time, then you will _automatically memorise it by repetition_. So no need to work at it. Just do the tutorial repeatedly, learning a bit more each time, and forget about memorising things.
 
-If anything is not working, check the code in this repository (particularly the `package.json` file) and compare it to your own. It should look like this:
+Make notes of things you _might_ want to look up later as you go along. Then don't look them up until you have to. You may be surprised to find that you end up tossing out your notes never having bothered to look up even one thing from them.
 
-```json
-{
-  "name": "tic-tac-toe",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "react": "^16.3.1",
-    "react-dom": "^16.3.1",
-    "react-scripts": "1.1.4"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "format": "prettier-standard 'src/**/*js'",
-    "precommit": "lint-staged",
-    "eject": "react-scripts eject"
-  },
-  "lint-staged": {
-    "linters": {
-      "src/**/*.js": [
-        "prettier-standard",
-        "git add"
-      ]
-    }
-  },
-  "devDependencies": {
-    "husky": "^0.14.3",
-    "lint-staged": "^7.0.4",
-    "prettier-standard": "^8.0.1"
-  }
-}
-```
+## Follow the single, shortest path
 
-## Afraid of Commitment?
+Pick one good way to do the thing and stick to it. Providing alternatives early on only confuses and increases cognitive load. There will be time to learn other approaches later.
 
-If you're using Git and GitHub, then there's one last step. Let's "commit" our changes and push them up to GitHub.
+There are a thousand ways you could build this Tic-Tac-Toe app. Is this the _best_ way? Who cares? It's a _good enough_ way. I promise you that this method is pretty close to current state-of-the-art as of the latest commit. If you ask fifty React developers if this is the best way to do this, you'll get fifty different answers, but mostly that's just [bikeshedding](https://en.wikipedia.org/wiki/Law_of_triviality). This method is good enough. Follow these instructions and keep repeating until you have them down cold.
 
-First let's see what files have been created or altered:
-```bash
-git status
-``` 
+Then you can try a slightly different approach. And then another. Vary it a bit this way or that. Try it with a different framework. Over time, you'll find what you like and you'll change your code accordingly. And that's as it should be. But right now, when you're first learning i, just do it _one way_. In short, either follow these instructions precisely, or choose a different tutorial. Don't try to diverge from the instructions until you're sure you understand them.
 
-You should see a list of the files similar to:
-![Git add, commmit, and push](./assets/status-before-add.png)
+The fifth-dan black belt can create her own style. The yellow-belt beginner who attempts this will only make a fool of himself. Follow the single, shortest path to the goal. Repeat until you know it blindfolded. Then seek nearby paths and continue this process until you can travel at will.
 
+## "But some choice you made is wrong!"
 
-Next, you'll "stage" all the changes. That tells git to include them in the commit. You have to stage your changes before you can commit them:
+This tutorial is an experiment with a new methodology for learning&mdash;really, a combination of many well-known, but often ignored, methods for learning. As such, it uses a very specific pedagogy. You may not like this approach. You may even _hate_ this approach. If that is the case, then I happily urge you to write your own tutorial following your own pedagogy. Hell, write a book about it. I'm doing so.
 
-```bash
-git add -A
-```
+But don't ask me to change this approach or rewrite this the way you'd prefer it. I didn't happen upon this approach by accident; neither did I just throw together a few techniques that sounded good. I've spent more than twenty years experimenting with and honing this approach. I'm not likely to abandon it or change it on a whim, and certainly not on _your_ whim.
 
-You can run ```git status``` again to see the files are now green, meaning they are staged and ready to commit.
+But that doesn't mean that I'm not open to criticism or new ideas! I'm just not interested in [gratuitous](http://www.dictionary.com/browse/gratuitous) ones. If something really doesn't seem to work, and you think you know a better way, then by all means ask questions about it or suggest an alternative. I'm happy to learn new things. The goal here is not to do things _my_ way, but to do the _the best way I can discover_.
 
-Then we'll commit them with a simple commit message:
+Also, bear in mind that I'm working with a large and diverse group of learners. What works for you, might not work as well for others. Ideally, all learning would be made-to-measure (another of the Munat methods), but with an online tutorial such as this, that's simply not possible. Yet. I'm working on some ideas. So this is a shot fired at centre of mass.
 
-```bash
-git commit -m "Initial commit"
-```
+**To be clear: By putting this online and inviting you to take part in it, subject to the understanding above, I am creating a _social contract_ with you. That means that I have a responsibility to make sure this is an _effective_ use of your time. Anything else is simply disrespectful. I take that responsibility very seriously, so if something is really wrong, or simply does not work (within reason), then _please_ let me know and I'll fix it ASAP. I hope you find this tutorial as effective and efficient as I've intended it to be. In short, I've tried to write the tutorial that I wish I had when I was first learning JavaScript and React.**
 
-Finally, we can push our changes up to GitHub:
+So have fun! Go forth and learn.
 
-```bash
-git push
-```
+## Start with the [set up](https://github.com/test-er-8-or/tic-tac-toe/tree/00-set-up)
 
-You should see something like this:
+1. [Set up](https://github.com/test-er-8-or/tic-tac-toe/tree/00-set-up)
+1. [Add the game board](https://github.com/test-er-8-or/tic-tac-toe/tree/01-add-the-game-board)
+1. [Add snapshots](https://github.com/test-er-8-or/tic-tac-toe/tree/02-add-snapshots)
+1. [Add click-handler and player](https://github.com/test-er-8-or/tic-tac-toe/tree/03-add-click-handler-and-player)
+1. [Add state management](https://github.com/test-er-8-or/tic-tac-toe/tree/04-add-state-management)
 
-![Git add, commmit, and push](./assets/git-add-commit-push.png)
-
-If you go to your repository on GitHub and reload the page, you should see all your changes. Nifty, eh?
-
-# Cleaning up the cruft
-
-There's one more thing we can do to get ready for the masterclass. Facebook's `create-react-app` is nice, but it adds a lot of cruft that we don't need. For example, the animated logo.
-
-Let's delete the files we don't need, and clean up the ones that remain, simplifying our code.
-
-In the `src` folder, delete the following files:
-
-* App.css
-* App.test.js
-* index.css
-* logo.svg
-* README.old.md
-
-Create a new folder called `components` in the `src` folder, then create an `App` folder inside the `components` folder, and, finally, move the `App.js` file into the `src/components/App` folder and rename it to `index.js`.
-
-Your folder and file structure should now look like this:
-
-![Decruftified files](./assets/decruftified-files.png)
-
-Now let's update the files to remove the code we no longer need and simplify the code that remains. Don't worry if none of this makes sense to you. All will be made clear in the masterclass! (OK, clearer.)
-
-In the `src/components/App/index.js` file, make it look like this:
-
-```javascript
-import React from 'react'
-
-export default function App () {
-  return <h1>Tic-Tac-Toe</h1>
-}
-```
-
-Whoa! That's a lot simpler. No?
-
-Now add a file `index.js` in the `src/components` folder and make it look like this:
-
-```javascript
-import App from './App'
-
-export { App }
-```
-
-Then update the `src/index.js` file (are you seeing a pattern with filenames here?) to look like this:
-
-```javascript
-import React from 'react'
-import { render } from 'react-dom'
-
-import { App } from './components'
-import registerServiceWorker from './registerServiceWorker'
-
-render(<App />, document.getElementById('root'))
-registerServiceWorker()
-```
-
-Finally, look in the `public` folder for the `index.html` file and clean it up so that it looks like this (don't miss the change from "shortcut icon" to "icon"):
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="theme-color" content="#000000">
-  <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
-  <link rel="icon" href="%PUBLIC_URL%/favicon.ico">
-  <title>Tic-Tac-Toe</title>
-</head>
-
-<body>
-  <noscript>
-    You need to enable JavaScript to run this app.
-  </noscript>
-  <div id="root"></div>
-</body>
-
-</html>
-```
-
-Let's test that it still works by running `yarn start` in the project's root folder (in our console, of course). The app should start and open itself in the browser. You should see this in your browser:
-
-![New home page](./assets/new-home-page.png)
-
-And this in your console (terminal):
-
-![Running the app](./assets/running-the-app.png)
-
-If everything appears to be working, then use Control-C to stop the app. If not, recheck your code against the code in this repo to see where you've gone wrong.
-
-Once everything is working, we can do another commit and push:
-
-```bash
-git add -A
-git commit -m "Remove cruft"
-git push
-```
-
-It will look like this in the terminal:
-
-![Cruft commit push](./assets/cruft-commit-push.png)
-
-Check your code on GitHub by reloading the page and you should see all the latest changes there.
-
-# Adding a couple of utilities
-
-We'll be using a very functional style of coding and the latest best practices for our Tic-Tac-Toe app. Why not? So we're going to add a few libraries that we'll need later. Let's do it now.
-
-At the command line (and with your project root folder as the working directory), type the following and hit the Enter key:
-
-```bash
-yarn add ramda ramda-adjunct styled-components react-router redux react-redux redux-observable rxjs redux-devtools-extension
-yarn add -D enzyme enzyme-adapter-react-16 enzyme-to-json jest-enzyme jest-styled-components react-test-renderer redux-mock-store
-```
-
-That should install those libraries. Then we'll do another commit and push:
-
-```bash
-git add -A
-git commit -m "Add ramda, ramda-adjunct, styled-components"
-git push
-```
-
-Your final `package.json` file should look like this (version numbers may vary):
-
-```json
-{
-  "name": "tic-tac-toe",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "ramda": "^0.25.0",
-    "ramda-adjunct": "^2.6.0",
-    "react": "^16.3.1",
-    "react-dom": "^16.3.1",
-    "react-redux": "^5.0.7",
-    "react-router": "^4.2.0",
-    "react-scripts": "1.1.4",
-    "redux": "^3.7.2",
-    "redux-devtools-extension": "^2.13.2",
-    "redux-observable": "^0.18.0",
-    "rxjs": "^5.5.10",
-    "styled-components": "^3.2.5"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "format": "prettier-standard 'src/**/*js'",
-    "precommit": "lint-staged",
-    "eject": "react-scripts eject"
-  },
-  "lint-staged": {
-    "linters": {
-      "src/**/*.js": [
-        "prettier-standard",
-        "git add"
-      ]
-    }
-  },
-  "devDependencies": {
-    "enzyme": "^3.3.0",
-    "enzyme-adapter-react-16": "^1.1.1",
-    "enzyme-to-json": "^3.3.3",
-    "husky": "^0.14.3",
-    "jest-enzyme": "^6.0.0",
-    "jest-styled-components": "^5.0.1",
-    "lint-staged": "^7.0.4",
-    "prettier-standard": "^8.0.1",
-    "react-test-renderer": "^16.3.1",
-    "redux-mock-store": "^1.5.1"
-  }
-}
-```
-
-Congratulations! You're ready to rock and roll with React and Tic-Tac-Toe. See you at the Summer of Tech 2018 Masterclass.
-
-You can also get a head start by reading up on these utilities:
-
-## [ramda](http://ramdajs.com/)
-
-Ramda gives us a host of powerful functions for manipulating data. The [Ramda docs](http://ramdajs.com/docs/) can take a little getting used to, but the examples help a lot. And the [Ramda REPL](http://ramdajs.com/repl/) is a great place to play around with Ramda. You can [bookmark your code](http://ramdajs.com/repl/?v=0.25.0#?const%20colours%20%3D%20%5B%27red%27%2C%20%27yellow%27%2C%20%27green%27%2C%20%27cyan%27%2C%20%27blue%27%2C%20%27magenta%27%5D%0A%0Aconst%20fourLetter%20%3D%20filter%28pipe%28length%2C%20equals%284%29%29%29%0A%0AfourLetter%28colours%29) and come right back to it later or send the link to a friend.
-
-## [ramda-adjunct](https://char0n.github.io/ramda-adjunct/)
-
-Ramda-adjunct adds a wealth of useful functions to Ramda so we don't have to rewrite them ourselves.
-
-## [styled-components](https://www.styled-components.com/)
-
-Makes it easy for us to encapsulate our CSS styles in our components, and theme them as well.
-
-You might also consider watching this [talk about styled-components](https://www.youtube.com/watch?v=bIK2NwoK9xk).
-
-## [react-router](https://reacttraining.com/react-router/)
-
-"React Router is a collection of navigational components that compose declaratively with your application."
-
-## [redux](https://redux.js.org/)
-
-Redux is a predictable state container for JavaScript apps.
-
-## [react-redux](https://github.com/reactjs/react-redux)
-
-The React bindings for Redux. (Makes Redux and React work together easily.)
-
-For the curious, [a video on react-redux by Dan Abramov](https://www.youtube.com/watch?v=VJ38wSFbM3A)
-
-## [redux-observable](https://redux-observable.js.org/)
-
-"RxJS 5-based middleware for Redux. Compose and cancel async actions to create side effects and more."
-
-## [rxjs](http://reactivex.io/rxjs/)
-
-"RxJS is a library for reactive programming using Observables, to make it easier to compose asynchronous or callback-based code."
-
-## [enzyme](http://airbnb.io/enzyme/)
-
-"Enzyme is a JavaScript Testing utility for React that makes it easier to assert, manipulate, and traverse your React Components' output."
-
-## [enzyme-adapter-react-16](https://github.com/airbnb/enzyme/tree/master/packages/enzyme-adapter-react-16)
-
-Just something Enzyme needs to work with React version 16. Don't worry about it.
-
-## [enzyme-to-json](https://github.com/adriantoine/enzyme-to-json)
-
-Makes our Enzyme snapshots prettier. You'll see.
-
-## [jest-enzyme](https://github.com/FormidableLabs/enzyme-matchers)
-
-Makes Enzyme work better with [Jest](https://facebook.github.io/jest/), which is what we'll be using for our tests.
-
-## [jest-styled-components](https://github.com/styled-components/jest-styled-components)
-
-Jest utilities for working with Styled Components
-
-## [react-test-renderer](https://reactjs.org/docs/test-renderer.html)
-
-Allows us to "render" our React components for testing without having to have a browser. Much faster.
-
-## [redux-mock-store](http://arnaudbenard.com/redux-mock-store/)
-
-"A mock store for your testing your redux async action creators and middleware."
-
-## [redux-devtools-extension](https://github.com/zalmoxisus/redux-devtools-extension)
-
-The coolest thing ever for tracking your application state. Time travelling!
+More to come . . .
