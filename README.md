@@ -172,7 +172,7 @@ We want to add our click handler to any Square that hasn't already been played, 
 
 We talked earlier about having a `moves` array that might look like this: `[4, 0, 2]`. We'll write a `getPlayer` function that takes the current Square index and the moves array, determines if there has been a move in this Square, and if there has, returns the player's mark. If there hasn't been a move yet in that square, we'll return `undefined`.
 
-Let's start by creating a `src/utilties` folder, and inside that a `src/utilities/getPlayer` folder, and inside that an `index.spec.js` file. That's right, we're going to write the tests first. So in the `src/utilities/getPlayer/index.spec.js` file, add:
+Let's start by creating a `src/utilities` folder, and inside that a `src/utilities/getPlayer` folder, and inside that an `index.spec.js` file. That's right, we're going to write the tests first. So in the `src/utilities/getPlayer/index.spec.js` file, add:
 
 ```javascript
 import getPlayer from '.'
