@@ -556,8 +556,6 @@ For the curious, [a video on react-redux by Dan Abramov](https://www.youtube.com
 
 "RxJS is a library for reactive programming using Observables, to make it easier to compose asynchronous or callback-based code."
 
-yarn add -D enzyme enzyme-adapter-react-16 enzyme-to-json jest-enzyme react-test-renderer
-
 ## [enzyme](http://airbnb.io/enzyme/)
 
 "Enzyme is a JavaScript Testing utility for React that makes it easier to assert, manipulate, and traverse your React Components' output."
