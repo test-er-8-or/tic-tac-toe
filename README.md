@@ -42,7 +42,7 @@ export default function App () {
 
 The outermost div will be our App, the first nested div will be our Board, and the nine divs nested in that one will be our nine Squares.
 
-Save your changes and run `yarn start` then point your browser to [http://localhost:3000/](http://localhost:3000/) to see the changes. You should see something like thes:
+Save your changes and run `yarn start` then point your browser to [http://localhost:3000/](http://localhost:3000/) to see the changes. You should see something like this:
 
 ![First pass at the game board](./assets/first-pass-game-board.png)
 
@@ -58,7 +58,7 @@ git push
 
 ## Thinking in React
 
-React is all about building reusable components. Think of them as our own, bespoke HTML elements. What kind of components would we want here? Well, we have a game board that consists of nine squares, each of which can hold either an X or an O. So it's seems reasonable that our `App` component would hold a `Board` component, and that our `Board` components would hold nine instances of a `Square` component.
+React is all about building reusable components. Think of them as our own, bespoke HTML elements. What kind of components would we want here? Well, we have a game board that consists of nine squares, each of which can hold either an X or an O. So it seems reasonable that our `App` component would hold a `Board` component, and that our `Board` components would hold nine instances of a `Square` component.
 
 We'll start at the top. Let's begin by styling our `App` component. To do this, we'll create a `StyledApp` component with `styled-components` and we'll use that in our `App` component.
 
@@ -113,7 +113,7 @@ And if we look in the body, we can see that this unique class has been applied t
 
 Sweet! Now let's create our Board component.
 
-First, we'll create a new folder under `src/components`. Call it `Board` and add an `index.js` file in it. We'll follow this pattern of naming the folder with the component name (in [PascalCase]()), and using `index.js` for the file name (`index.js` files are loaded by default, so we can still use `import Board from './components/Board'` to import the Board component). You're folder/file hierarchy should look like this when you're done:
+First, we'll create a new folder under `src/components`. Call it `Board` and add an `index.js` file in it. We'll follow this pattern of naming the folder with the component name (in [PascalCase]()), and using `index.js` for the file name (`index.js` files are loaded by default, so we can still use `import Board from './components/Board'` to import the Board component). Your folder/file hierarchy should look like this when you're done:
 
 ![Folder hierarchy after adding Board component](./assets/folders-after-board-added.png)
 
