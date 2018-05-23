@@ -144,7 +144,7 @@ This is not a class in CSS, so we won't explain all the CSS we're using here. If
 Some things to note:
 
 * We aren't using any [JSX](https://reactjs.org/docs/jsx-in-depth.html), so we don't need to import React (JSX is the JavaScript that looks like HTML in our files).
-* We create a styled `<div />` component by calling the `div` function from the `styled` library _and passing it a template string. Template strings are multi-line strings delimited by the back tick (```) character.
+* We create a styled `<div />` component by calling the `div` function from the `styled` library and passing it a template string. Template strings are multi-line strings delimited by the back tick (```) character.
 * We're using CSS Grid Layout to create a grid with three rows of three cells each. These cells will be our Squares.
 * We call the squares 'zero', 'one', 'two', etc., which corresponds to the square's index in an array (JavaScript array indices start at 0).
 * Each row is `20vh` units high, and each column is `20vh` units wide. A `vh` unit is 1% of the height of the window, so each square will have height and width equal to 20% of the height of the window area.
@@ -318,7 +318,7 @@ Can we make our board using only `border-bottom` and `border-right`? Let's think
 index => index < 6 ? '2px' : 0
 ```
 
-That is an arrow function expression that represents a function that takes one parameter, which we'll call `index` here, then compares that index with 6, and if it is less than 6, it return the value right after the `?`, which is '2px'. If it is not less than six, it returns the value right after the `:`, which is 0. This is called a ternary operator because it has three parts: the condition, the value returned when the condition is true, and the value returned when the condition is false, in that order.
+That is an arrow function expression that represents a function that takes one parameter, which we'll call `index` here, then compares that index with 6, and if it is less than 6, it returns the value right after the `?`, which is '2px'. If it is not less than six, it returns the value right after the `:`, which is 0. This is called a ternary operator because it has three parts: the condition, the value returned when the condition is true, and the value returned when the condition is false, in that order.
 
 Our `styled.div` function accepts a props object, and we can provide functions on those props to use in our tagged template.
 
@@ -484,4 +484,4 @@ export default function App () {
 }
 ```
 
-Later, we'll extend this so that it handles our moves as they occur (and makes each cell clickable). But for now, this is enough. If you check your page, you should see that nothing has changed. But change the `idx % 2 === 0` above to `idx % 2 === 1` and you should see the X's and O's swap positions. (Then change it back&mdash;we're goint to make a rule that the first player is always X. That's makes things simpler.)
+Later, we'll extend this so that it handles our moves as they occur (and makes each cell clickable). But for now, this is enough. If you check your page, you should see that nothing has changed. But change the `idx % 2 === 0` above to `idx % 2 === 1` and you should see the X's and O's swap positions. (Then change it back&mdash;we're going to make a rule that the first player is always X. That makes things simpler.)
