@@ -139,7 +139,7 @@ const Board = styled.div`
 export default Board
 ```
 
-This is not a class in CSS, so we won't explain all the CSS we're using here. If you're interested, you can simply read more about [CSS Grid Layout]().
+This is not a class in CSS, so we won't explain all the CSS we're using here. If you're interested, you can simply read more about [CSS Grid Layout](https://www.w3schools.com/css/css_grid.asp).
 
 Some things to note:
 
