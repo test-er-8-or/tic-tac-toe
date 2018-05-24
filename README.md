@@ -469,7 +469,7 @@ We'll be using a very functional style of coding and the latest best practices f
 At the command line (and with your project root folder as the working directory), type the following and hit the Enter key:
 
 ```bash
-yarn add ramda ramda-adjunct styled-components react-router redux react-redux redux-observable rxjs redux-devtools-extension
+yarn add ramda ramda-adjunct styled-components react-router redux react-redux redux-observable rxjs rxjs-compat redux-devtools-extension
 yarn add -D enzyme enzyme-adapter-react-16 enzyme-to-json jest-enzyme jest-styled-components react-test-renderer redux-mock-store
 ```
 
@@ -569,15 +569,10 @@ For the curious, [a video on react-redux by Dan Abramov](https://www.youtube.com
 
 "RxJS 5-based middleware for Redux. Compose and cancel async actions to create side effects and more."
 
-## [rxjs](http://reactivex.io/rxjs/)
+## [rxjs](http://reactivex.io/rxjs/) [rxjs-compat](https://www.npmjs.com/package/rxjs-compat)
 
 "RxJS is a library for reactive programming using Observables, to make it easier to compose asynchronous or callback-based code."
 
-<<<<<<< HEAD
-yarn add -D enzyme enzyme-adapter-react-16 enzyme-to-json jest-enzyme react-test-renderer
-
-=======
->>>>>>> master
 ## [enzyme](http://airbnb.io/enzyme/)
 
 "Enzyme is a JavaScript Testing utility for React that makes it easier to assert, manipulate, and traverse your React Components' output."
