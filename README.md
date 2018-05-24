@@ -1,8 +1,12 @@
 # Setup
 
-**Please install the following software _before_ attending the class.** We will not have time to work with you individually or to wait while you install software during the class&mdash;especially if many people are attempting to download simultaneously. If you really can't get everything installed&mdash;even after searching for help online&mdash;then please contact us through Summer of Tech and we'll try to help.
+**If you are attending a Summer of Tech class that will use this tutorial, then please install the following software and complete this step _before_ attending the class.**
+
+We will not have time to work with you individually or to wait while you install software during the class&mdash;especially if many people are attempting to download simultaneously. If you really can't get everything installed&mdash;even after searching for help online&mdash;then please contact us through Summer of Tech and we'll try to help.
 
 **For the best masterclass experience**, take the time to get everything installed correctly and make sure it's running properly. We're, like, serious about this.
+
+For the rest of you, you're on your own. Heh, heh.
 
 **Note:** If you don't want to set everything up on your own laptop, or if your laptop is a bit old, or you'd just rather work online, then you can follow [these instructions for using CodeSandbox.io](./code-sandbox-README.md). We recommend signing in with a GitHub account (and registering with GitHub if you don't already have one).
 
@@ -18,7 +22,7 @@ First and foremost, you must have [node.js](https://nodejs.org/en/) installed. W
 
 ## Yarn
 
-Once you have node.js installed, install [yarn](https://yarnpkg.com/en/docs/install). We'll be using yarn throughout the demo, so it will make it easier for you. However, if you're very familiar with **npm**, then you're welcome to use it instead. But why not give Yarn a try?
+Once you have node.js installed, install [yarn](https://yarnpkg.com/en/docs/install). We'll be using yarn throughout the demo, so it will make it easier for you. However, if you're stuck on **npm**, then you're welcome to use it instead. But why not give Yarn a try? Kittens like it! Can't be all bad.
 
 ## An IDE or code editor
 
@@ -46,11 +50,11 @@ We'll also be using a code formatter to format our code to [JavaScript Standard 
 
 VSCode has a [Prettier-standard extension](https://marketplace.visualstudio.com/items?itemName=numso.prettier-standard-vscode). You can find similar extensions for other editors as well. If you're using VSCode, install this now.
 
-You can get by without the linter and formatter, but you'll probably be much happier with them. Just sayin'.
+**You can get by without the linter and formatter**, but you'll probably be much happier with them. Just sayin'.
 
 ## Babel JavaScript
 
-We're going to be using the hottest, newest JavaScript code to write our application, because, hey, we rock! We want our editor to highlight our syntax properly. We'll be using the Babel "transpiler" (don't ask) to convert our super-hot, ultra-modern code back to the stone age code used by most browsers. (Only slightly joking there.) So let's add an extension to make it easier: [Babel Javascript](https://marketplace.visualstudio.com/items?itemName=mgmcdermott.vscode-language-babel).
+We're going to be using the hottest, newest JavaScript code to write our application, because, hey, we rock! We want our editor to highlight our syntax properly. We'll be using the Babel "transpiler" (don't ask) to convert our super-hot, ultra-modern code back to the stone age code used by most browsers. (Only slightly joking there.) So let's add an extension to make it easier to read that modern ES.next code: [Babel Javascript](https://marketplace.visualstudio.com/items?itemName=mgmcdermott.vscode-language-babel).
 
 ## Git and GitHub
 
