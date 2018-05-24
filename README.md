@@ -30,6 +30,7 @@ const StyledSquare = styled.div`
   text-align: center;
   text-transform: uppercase;
 `
+StyledSquare.defaultName = 'StyledSquare'
 
 export default function Square ({ handleClick, index, player }) {
   return (
@@ -63,6 +64,7 @@ const StyledSquare = styled.div`
   text-align: center;
   text-transform: uppercase;
 `
+StyledSquare.defaultName = 'StyledSquare'
 
 export default function Square ({ handleClick, index, player }) {
   return (
@@ -306,6 +308,7 @@ const StyledApp = styled.div`
   padding: 0;
   width: 100vw;
 `
+StyledApp.defaultName = 'StyledApp'
 
 export default function App ({ moves = [4, 0, 2] /* mock */ }) {
   return (
@@ -383,7 +386,7 @@ exports[`components:App renders the App with a blank game board and nine squares
 <div
   className="c0"
 >
-  <styled.div>
+  <Board>
     <Square
       handleClick={[Function]}
       index={0}
@@ -429,7 +432,7 @@ exports[`components:App renders the App with a blank game board and nine squares
       index={8}
       key="8"
     />
-  </styled.div>
+  </Board>
 </div>
 `;
 
@@ -447,7 +450,7 @@ exports[`components:App renders the App with a game board three moves: center, t
 <div
   className="c0"
 >
-  <styled.div>
+  <Board>
     <Square
       index={0}
       key="0"
@@ -493,7 +496,7 @@ exports[`components:App renders the App with a game board three moves: center, t
       index={8}
       key="8"
     />
-  </styled.div>
+  </Board>
 </div>
 `;
 ```

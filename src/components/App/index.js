@@ -10,15 +10,13 @@ function makeSquares (moves) {
   return times(square => {
     const player = getPlayer(square, moves)
 
-    return isUndefined(player) ? (
-      <Square
+    return isUndefined(player)
+      ? <Square
         key={square}
         index={square}
         handleClick={() => console.log(`Square ${square}`)}
-      />
-    ) : (
-      <Square key={square} index={square} player={player} />
-    )
+        />
+      : <Square key={square} index={square} player={player} />
   }, 9)
 }
 
@@ -31,6 +29,7 @@ const StyledApp = styled.div`
   padding: 0;
   width: 100vw;
 `
+StyledApp.defaultName = 'StyledApp'
 
 export default function App ({ moves = [] }) {
   return (
