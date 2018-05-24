@@ -71,8 +71,8 @@ Talk a look at the `src/components/App/__snapshots__/index.spec.js.snap` file an
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`components:App renders the App with a game board and nine squares 1`] = `
-<styled.div>
-  <styled.div>
+<StyledApp>
+  <Board>
     <Square
       index={0}
       key="0"
@@ -118,8 +118,8 @@ exports[`components:App renders the App with a game board and nine squares 1`] =
       key="8"
       player="x"
     />
-  </styled.div>
-</styled.div>
+  </Board>
+</StyledApp>
 `;
 ```
 
@@ -438,7 +438,7 @@ exports[`components:App renders the App with a game board and nine squares 1`] =
 <div
   className="c0"
 >
-  <styled.div>
+  <Board>
     <Square
       index={0}
       key="0"
@@ -484,7 +484,7 @@ exports[`components:App renders the App with a game board and nine squares 1`] =
       key="8"
       player="x"
     />
-  </styled.div>
+  </Board>
 </div>
 `;
 ```

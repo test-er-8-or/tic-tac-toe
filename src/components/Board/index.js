@@ -13,5 +13,6 @@ const Board = styled.div`
   margin: auto;
   width: 60vh;
 `
+Board.displayName = 'Board'
 
 export default Board

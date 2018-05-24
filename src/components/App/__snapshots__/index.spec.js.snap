@@ -14,7 +14,7 @@ exports[`components:App renders the App with a game board and nine squares 1`] =
 <div
   className="c0"
 >
-  <styled.div>
+  <Board>
     <Square
       index={0}
       key="0"
@@ -60,6 +60,6 @@ exports[`components:App renders the App with a game board and nine squares 1`] =
       key="8"
       player="x"
     />
-  </styled.div>
+  </Board>
 </div>
 `;
