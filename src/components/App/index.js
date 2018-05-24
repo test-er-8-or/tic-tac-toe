@@ -14,6 +14,7 @@ const StyledApp = styled.div`
   padding: 0;
   width: 100vw;
 `
+StyledApp.defaultName = 'StyledApp'
 
 export default function App () {
   return (

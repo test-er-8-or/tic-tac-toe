@@ -521,6 +521,7 @@ const StyledApp = styled.div`
   padding: 0;
   width: 100vw;
 `
+StyledApp.defaultName = 'StyledApp'
 
 export default function App ({ moves = [] }) {
   return (
@@ -649,6 +650,7 @@ const StyledApp = styled.div`
   padding: 0;
   width: 100vw;
 `
+StyledApp.defaultName = 'StyledApp'
 
 export function App ({ markSquare, moves }) {
   return (
@@ -732,6 +734,7 @@ const StyledApp = styled.div`
   padding: 0;
   width: 100vw;
 `
+StyledApp.defaultName = 'StyledApp'
 
 export default function App () {
   return (
@@ -845,6 +848,7 @@ const StyledSquare = styled.div`
   text-align: center;
   text-transform: uppercase;
 `
+StyledSquare.defaultName = 'StyledSquare'
 
 export default function Square ({ handleClick, index, player }) {
   return isUndefined(player)
