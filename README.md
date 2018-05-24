@@ -42,7 +42,7 @@ export default function App () {
 
 The outermost div will be our App, the first nested div will be our Board, and the nine divs nested in that one will be our nine Squares.
 
-Save your changes and run `yarn start` then point your browser to [http://localhost:3000/](http://localhost:3000/) to see the changes. You should see something like thes:
+Save your changes and run `yarn start` then point your browser to [http://localhost:3000/](http://localhost:3000/) to see the changes. You should see something like these:
 
 ![First pass at the game board](./assets/first-pass-game-board.png)
 
@@ -52,13 +52,18 @@ Before we move on, let's do a commit:
 
 ```bash
 git add -A
+git status
 git commit -m "Add first pass at game board"
+git status
 git push
+git status
 ```
+
+If you're wondering what you're committing, you can check the status of your files at any time with `git status`. Before the files have been "staged" (marked to be included in the commit), they will appear in red and "unstaged". After you issue the `git add -A` (-A means all), they should appear as staged files in green. After you make the commit, `git status` should show that nothing has changed.
 
 ## Thinking in React
 
-React is all about building reusable components. Think of them as our own, bespoke HTML elements. What kind of components would we want here? Well, we have a game board that consists of nine squares, each of which can hold either an X or an O. So it's seems reasonable that our `App` component would hold a `Board` component, and that our `Board` components would hold nine instances of a `Square` component.
+React is all about building reusable components. Think of them as our own, bespoke HTML elements. What kind of components would we want here? Well, we have a game board that consists of nine squares, each of which can hold either an X or an O. So it seems reasonable that our `App` component would hold a `Board` component, and that our `Board` components would hold nine instances of a `Square` component.
 
 We'll start at the top. Let's begin by styling our `App` component. To do this, we'll create a `StyledApp` component with `styled-components` and we'll use that in our `App` component.
 
@@ -77,6 +82,7 @@ const StyledApp = styled.div`
   padding: 0;
   width: 100vw;
 `
+StyledApp.displayName = 'StyledApp'
 
 export default function App () {
   return (
@@ -113,7 +119,7 @@ And if we look in the body, we can see that this unique class has been applied t
 
 Sweet! Now let's create our Board component.
 
-First, we'll create a new folder under `src/components`. Call it `Board` and add an `index.js` file in it. We'll follow this pattern of naming the folder with the component name (in [PascalCase]()), and using `index.js` for the file name (`index.js` files are loaded by default, so we can still use `import Board from './components/Board'` to import the Board component). You're folder/file hierarchy should look like this when you're done:
+First, we'll create a new folder under `src/components`. Call it `Board` and add an `index.js` file in it. We'll follow this pattern of naming the folder with the component name (in [PascalCase](http://wiki.c2.com/?PascalCase)), and using `index.js` for the file name (`index.js` files are loaded by default, so we can still use `import Board from './components/Board'` to import the Board component). Your folder/file hierarchy should look like this when you're done:
 
 ![Folder hierarchy after adding Board component](./assets/folders-after-board-added.png)
 
@@ -135,16 +141,17 @@ const Board = styled.div`
   margin: auto;
   width: 60vh;
 `
+Board.displayName = 'Board'
 
 export default Board
 ```
 
-This is not a class in CSS, so we won't explain all the CSS we're using here. If you're interested, you can simply read more about [CSS Grid Layout]().
+This is not a class in CSS, so we won't explain all the CSS we're using here. If you're interested, you can simply read more about [CSS Grid Layout](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout).
 
 Some things to note:
 
 * We aren't using any [JSX](https://reactjs.org/docs/jsx-in-depth.html), so we don't need to import React (JSX is the JavaScript that looks like HTML in our files).
-* We create a styled `<div />` component by calling the `div` function from the `styled` library _and passing it a template string. Template strings are multi-line strings delimited by the back tick (```) character.
+* We create a styled `<div />` component by calling the `div` function from the `styled` library and passing it a template string. Template strings are multi-line strings delimited by the back tick (```) character.
 * We're using CSS Grid Layout to create a grid with three rows of three cells each. These cells will be our Squares.
 * We call the squares 'zero', 'one', 'two', etc., which corresponds to the square's index in an array (JavaScript array indices start at 0).
 * Each row is `20vh` units high, and each column is `20vh` units wide. A `vh` unit is 1% of the height of the window, so each square will have height and width equal to 20% of the height of the window area.
@@ -176,6 +183,7 @@ const StyledApp = styled.div`
   padding: 0;
   width: 100vw;
 `
+StyledApp.displayName = 'StyledApp'
 
 export default function App () {
   return (
@@ -227,6 +235,7 @@ const StyledSquare = styled.div`
   text-align: center;
   text-transform: uppercase;
 `
+StyledSquare.displayName = 'StyledSquare'
 
 export default function Square (props) {
   return (
@@ -268,6 +277,7 @@ const StyledApp = styled.div`
   padding: 0;
   width: 100vw;
 `
+StyledApp.displayName = 'StyledApp'
 
 export default function App () {
   return (
@@ -300,6 +310,8 @@ git commit -m "First pass at board squares"
 git push
 ```
 
+Don't forget that you can use `git status` to check the status of your files: unstaged, staged for commit, or commited.
+
 ## Adding polish
 
 OK, that doesn't look like a normal tic-tac-toe board, which looks a little like a # sign. We need to get rid of a few borders.
@@ -318,7 +330,7 @@ Can we make our board using only `border-bottom` and `border-right`? Let's think
 index => index < 6 ? '2px' : 0
 ```
 
-That is an arrow function expression that represents a function that takes one parameter, which we'll call `index` here, then compares that index with 6, and if it is less than 6, it return the value right after the `?`, which is '2px'. If it is not less than six, it returns the value right after the `:`, which is 0. This is called a ternary operator because it has three parts: the condition, the value returned when the condition is true, and the value returned when the condition is false, in that order.
+That is an arrow function expression that represents a function that takes one parameter, which we'll call `index` here, then compares that index with 6, and if it is less than 6, it returns the value right after the `?`, which is '2px'. If it is not less than six, it returns the value right after the `:`, which is 0. This is called a ternary operator because it has three parts: the condition, the value returned when the condition is true, and the value returned when the condition is false, in that order.
 
 Our `styled.div` function accepts a props object, and we can provide functions on those props to use in our tagged template.
 
@@ -352,6 +364,7 @@ const StyledSquare = styled.div`
   text-align: center;
   text-transform: uppercase;
 `
+StyledSquare.displayName = 'StyledSquare'
 
 export default function Square (props) {
   return (
@@ -388,6 +401,7 @@ const StyledSquare = styled.div`
   text-align: center;
   text-transform: uppercase;
 `
+StyledSquare.displayName = 'StyledSquare'
 
 export default function Square (props) {
   return (
@@ -432,6 +446,7 @@ const StyledSquare = styled.div`
   text-align: center;
   text-transform: uppercase;
 `
+StyledSquare.displayName = 'StyledSquare'
 
 export default function Square ({ index, player }) {
   return (
@@ -472,6 +487,7 @@ const StyledApp = styled.div`
   padding: 0;
   width: 100vw;
 `
+StyledApp.displayName = 'StyledApp'
 
 export default function App () {
   return (
@@ -484,4 +500,4 @@ export default function App () {
 }
 ```
 
-Later, we'll extend this so that it handles our moves as they occur (and makes each cell clickable). But for now, this is enough. If you check your page, you should see that nothing has changed. But change the `idx % 2 === 0` above to `idx % 2 === 1` and you should see the X's and O's swap positions. (Then change it back&mdash;we're goint to make a rule that the first player is always X. That's makes things simpler.)
+Later, we'll extend this so that it handles our moves as they occur (and makes each cell clickable). But for now, this is enough. If you check your page, you should see that nothing has changed. But change the `idx % 2 === 0` above to `idx % 2 === 1` and you should see the X's and O's swap positions. (Then change it back&mdash;we're going to make a rule that the first player is always X. That's makes things simpler.)
