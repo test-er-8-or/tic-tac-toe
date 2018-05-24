@@ -571,6 +571,8 @@ For the curious, [a video on react-redux by Dan Abramov](https://www.youtube.com
 
 ## [rxjs](http://reactivex.io/rxjs/) [rxjs-compat](https://www.npmjs.com/package/rxjs-compat)
 
+(Note: If you are running the latest Rx.js and node, you may not need the rxjs-compat library.)
+
 "RxJS is a library for reactive programming using Observables, to make it easier to compose asynchronous or callback-based code."
 
 ## [enzyme](http://airbnb.io/enzyme/)
