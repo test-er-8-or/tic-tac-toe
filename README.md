@@ -568,3 +568,98 @@ git add -A
 git commit -m "Update reducer for GAME_OVER action"
 git push
 ```
+
+## Retrieving the winningGames and winningPlayer from state
+
+We still need a way to get these values back out of our state, and that means selectors. We'll add a couple of tests to `src/state/selectors/index.spec.js` to test that our selectors work:
+
+```javascript
+// src/state/selectors/index.spec.js
+import { getMoves, getWinningPlayer, getWinningSquares } from '.'
+
+describe('state:selectors', () => {
+  describe('getMoves', () => {
+    it('extracts the moves array from the state', () => {
+      const moves = [4, 0, 2]
+      const state = { moves }
+
+      expect(getMoves(state)).toBe(moves)
+    })
+  })
+
+  describe('getWinningPlayer', () => {
+    it('extracts the moves array from the state', () => {
+      const winningPlayer = 'x'
+      const state = { winningPlayer }
+
+      expect(getWinningPlayer(state)).toBe(winningPlayer)
+    })
+  })
+
+  describe('getWinningSquares', () => {
+    it('extracts the moves array from the state', () => {
+      const winningSquares = [0, 3, 6]
+      const state = { winningSquares }
+
+      expect(getWinningSquares(state)).toBe(winningSquares)
+    })
+  })
+})
+```
+
+(Note the second and third tests.) These fail as expected, so we update `src/state/selectors/index.js` to add the selectors to make the tests pass:
+
+```javascript
+// src/state/selectors/index.js
+export function getMoves ({ moves }) {
+  return moves
+}
+
+export function getWinningPlayer ({ winningPlayer }) {
+  return winningPlayer
+}
+
+export function getWinningSquares ({ winningSquares }) {
+  return winningSquares
+}
+```
+
+Pretty simple, eh? Tests pass, and because we've added new exports, we need to update the `src/state/index.js` file:
+
+```javascript
+// src/state/index.js
+import { gameOver, squareClicked } from './actions'
+import { GAME_OVER, SQUARE_CLICKED } from './constants'
+import { initialState, rootReducer } from './reducers'
+import { getMoves, getWinningPlayer, getWinningSquares } from './selectors'
+import configureStore from './store'
+
+export {
+  configureStore,
+  GAME_OVER,
+  gameOver,
+  getMoves,
+  getWinningPlayer,
+  getWinningSquares,
+  initialState,
+  rootReducer,
+  SQUARE_CLICKED,
+  squareClicked
+}
+```
+
+Now we can create an action on game over, update the state with the winning squares and player, and retrieve those values from the state. What remains is to somehow trigger the `getWins` function and, if it returns one or two winning combinations, or there are no more squares to play, then we want to dispatch our action and update our state accordingly. We'll get to that next.
+
+Meanwhile, notice how _simple_ our application really is. Scroll back up and look at our state objects after a win. Nothing complex, right? A list of moves by the number of the square played, a list of winning squares, a winning player.
+
+Or check out our selectors. We destructure the simple state and just return the part we want. Our action creators are similarly simple, and our reducer just updates the state accordingly. It may seem like a lot of moving parts, but it's not, really. Actions to get data into the state, a reducer to update it, and selectors to get the data back out again.
+
+As for the React components, they, too, are fairly simple and clean. Each creates a part of the view based on the props. The props are updated when the state changes (we extract some of them from the state using `mapStateToProps`), so the HTML output becomes nothing more than _a projection of the state into the view_. And that's the way we want it. It's much simpler than Model-View-Whatever. Essentially, it's just a view and a state machine.
+
+Let's do a commit:
+
+```bash
+git add -A
+git commit -m "Add getWinningPlayer and getWinningSquares selectors"
+git push
+```
