@@ -88,6 +88,7 @@ That should yield a board array like this: `['x', 'x', 'x', 'o', 'o', undefined,
 So let's add a `getBoard` utility function. We'll need a `src/utilities/getBoard` folder, and we'll start with a `src/utilities/getBoard/index.spec.js` file. Here's our code:
 
 ```javascript
+// src/utilities/getBoard/index.spec.js
 import getBoard from '.'
 
 describe('utilities:getBoard', () => {
@@ -112,6 +113,7 @@ describe('utilities:getBoard', () => {
 It fails, of course. Now let's use our `times(identity, 9)` board and map through it checking each square against the `moves` array we passed in, and returning a _new_ array in which the square either contains a player or is undefined. Create `src/utilities/getBoard/index.js` and add this code:
 
 ```javascript
+// src/utilities/getBoard/index.js
 import { identity, map, times } from 'ramda'
 
 import { getPlayer } from '..'
@@ -124,6 +126,7 @@ export default function getBoard (moves) {
 And our test passes. It's a simple utility function (all the best are), so it even passes 100% coverage. Good time for a commit. But first, let's add our import/export to `src/utilities/index.js`:
 
 ```javascript
+// src/utilities/index.js
 import getBoard from './getBoard'
 import getPlayer from './getPlayer'
 
@@ -135,5 +138,133 @@ Now:
 ```bash
 git add -A
 git commit -m "Add the getBoard utility function"
+git push
+```
+
+## Checking for wins
+
+Let's take our winning patters from above and convert them to an array of arrays:
+
+```javascript
+const patterns = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+  [0, 4, 8],
+  [2, 4, 6]
+]
+```
+
+Now, all we need to do is filter on those patterns and return any in which all three squares have the same player in them. So what we want to know is:
+
+1. Is there a player's mark in the first square of the three, i.e., is it a move? AND
+1. Does the first square have the same mark as the second square? AND
+1. Does the second square have the same mark as the third square?
+
+Let's create yet another utility function, this one called `getWins`. It will take the current board and return an array of the winning pattern(s), if any. We'll need a `src/utilities/getWins` folder and a `src/utilities/getWins/index.spec.js` file. We'll write a test:
+
+```javascript
+// src/utilities/getWins/index.spec.js
+import getWins from '.'
+
+describe('utilities:getWins', () => {
+  it('returns a array with the winning pattern when there is a single win', () => {
+    const board = ['x', 'o', 'x', 'o', 'x', 'o', 'x', undefined, undefined]
+    const wins = [[2, 4, 6]]
+
+    expect(getWins(board)).toEqual(wins)
+  })
+})
+```
+
+That's a win along the diagonal from top right to bottom left. Note that the `getWins` function should return an array _of arrays_, because there can be more than one winning trinity. Now let's make it rain.
+
+We will run filter on our _patterns_, comparing to the board in success. IF the first square is not `undefined` AND the first square belongs to the same player as the second AND the second square belongs to the same player as the third, THEN we will include that win pattern in the output. Create `src/utilities/getWins/index.js` and add this code:
+
+```javascript
+// src/utilities/getWins/index.js
+import { filter } from 'ramda'
+
+const patterns = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+  [0, 4, 8],
+  [2, 4, 6]
+]
+
+export default function getWins (board) {
+  return filter(pattern => {
+    const [s1, s2, s3] = pattern
+
+    return (
+      Boolean(board[s1]) && board[s1] === board[s2] && board[s2] === board[s3]
+    )
+  }, patterns)
+}
+```
+
+Great! Let's extend our tests to include a board that has no win (empty array out) and one with two wins. Here's our new `src/utilities/getWins/index.spec.js`:
+
+```javascript
+// src/utilities/getWins/index.spec.js
+import getWins from '.'
+
+describe('utilities:getWins', () => {
+  it('returns an empty array when there are no wins', () => {
+    const board = [
+      'x',
+      'o',
+      'x',
+      'o',
+      'x',
+      'o',
+      undefined,
+      undefined,
+      undefined
+    ]
+    const wins = []
+
+    expect(getWins(board)).toEqual(wins)
+  })
+
+  it('returns a array with the winning pattern when there is a single win', () => {
+    const board = ['x', 'o', 'x', 'o', 'x', 'o', 'x', undefined, undefined]
+    const wins = [[2, 4, 6]]
+
+    expect(getWins(board)).toEqual(wins)
+  })
+
+  it('returns a array with two winning patterns when there are two wins', () => {
+    const board = ['x', 'o', 'x', 'o', 'x', 'o', 'x', 'o', 'x']
+    const wins = [[0, 4, 8], [2, 4, 6]]
+
+    expect(getWins(board)).toEqual(wins)
+  })
+})
+```
+
+That should cover us, and indeed test coverage is 100%. Now let's add our `getWins` function to our utilities import/export in `src/utilities/index.js`:
+
+```javascript
+// src/utilities/index.js
+import getBoard from './getBoard'
+import getPlayer from './getPlayer'
+import getWins from './getWins'
+
+export { getBoard, getPlayer, getWins }
+```
+
+Check our tests, and time for a commit.
+
+```bash
+git add -A
+git commit -m "Add a getWins utility function"
 git push
 ```
