@@ -663,3 +663,361 @@ git add -A
 git commit -m "Add getWinningPlayer and getWinningSquares selectors"
 git push
 ```
+
+## Alerting the user
+
+We may have added the win to our state, but the board still looks (and is) playable. We want to alert the players that X has won, and to prevent further play. So back to our React components, which are responsible for both our view and for user interaction.
+
+We could try to draw lines through the winning squares, but let's keep it simple. Let's just grey out all the _losing_ squares (and prevent further play). As squares cannot be played twice, we need do nothing to the winning squares. We also avoid dealing with the `Board` or `App` components. Our `Square` components are already "connected", so we can just get the winning squares from the state and grey out any square that isn't in the winners array.
+
+We'll start with our simple component, `src/components/Square/index.js`. Let's add a `isWinningSquare` Boolean that we'll pass in from our connected version (the "container" Square) _if the game is over_. To be clear, there are three possible states of this Boolean value: `true`, `false`, and `undefined`. If the value is `undefined`, the game is in play; otherwise, the Boolean value tells us whether this square is a winner or not.
+
+This is a complex truth statement, and there are many ways you can sort it out. Here's one.
+
+First, let's extend our `StyledSquare` to accommodate three options:
+
+* `SquarePlayable` for unplayed squares while the game is on
+* `SquarePlayed` for squares that have been played but are not losers (yet)
+* `SquareLost` for squares that have lost, whether played or not
+
+We don't need a `SquareWon` square because we can just reuse the `SquarePlayed`&mdash;after all, they are not replayable.
+
+Only the playable squares will get our click handler to allow them to be played. They will get the "pointer" cursor you see when you hover over links. Every played square during the game and _all_ squares once the game is over will get the "default" cursor.
+
+Also, played (but not losing) squares will get the X or O colour. Losing squares that have been played will be greyed out.
+
+To begin, we'll add a few tests to our `src/components/Square/index.spec.js` file:
+
+```javascript
+// src/components/Square/index.spec.js
+import React from 'react'
+import { shallow } from 'enzyme'
+
+import Square from '.'
+
+describe('components:Square', () => {
+  it('renders the Square with the proper cursor if a click handler is provided', () => {
+    expect(
+      toJson(shallow(<Square handleClick={() => null} index={0} />).dive())
+    ).toMatchSnapshot()
+  })
+
+  it('renders the Square with the proper styles for player O in the top left square', () => {
+    expect(
+      toJson(shallow(<Square player='o' index={0} />).dive())
+    ).toMatchSnapshot()
+  })
+
+  it('renders the Square with the proper styles for player X in the top left square', () => {
+    expect(
+      toJson(shallow(<Square player='x' index={0} />).dive())
+    ).toMatchSnapshot()
+  })
+
+  it('renders the Square with the proper styles for player X in the top right square', () => {
+    expect(
+      toJson(shallow(<Square player='x' index={2} />).dive())
+    ).toMatchSnapshot()
+  })
+
+  it('renders the Square with the proper styles for player X in the bottom left square', () => {
+    expect(
+      toJson(shallow(<Square player='x' index={6} />).dive())
+    ).toMatchSnapshot()
+  })
+
+  it('renders the Square with the proper styles for player X in the bottom right square', () => {
+    expect(
+      toJson(shallow(<Square player='x' index={8} />).dive())
+    ).toMatchSnapshot()
+  })
+
+  it('renders the Square with the proper styles for player X win', () => {
+    expect(
+      toJson(shallow(<Square player='x' index={8} isWinningSquare />).dive())
+    ).toMatchSnapshot()
+  })
+
+  it('renders the Square with the proper styles for player O loss', () => {
+    expect(
+      toJson(
+        shallow(<Square player='o' index={8} isWinningSquare={false} />).dive()
+      )
+    ).toMatchSnapshot()
+  })
+
+  it('renders the Square with the proper styles for an unplayed square after game over', () => {
+    expect(
+      toJson(shallow(<Square index={4} isWinningSquare={false} />).dive())
+    ).toMatchSnapshot()
+  })
+})
+```
+
+We can extend `StyledSquare` thus:
+
+```javascript
+// In src/components/Square/index.js
+const StyledSquare = styled.div`
+  border-color: hsla(0, 0%, 0%, 0.2);
+  border-style: solid;
+  border-width: 0 ${({ index }) => (index % 3 === 2 ? 0 : '2px')}
+    ${({ index }) => (index < 6 ? '2px' : 0)} 0;
+  cursor: default;
+  font-size: 16vh;
+  font-weight: bold;
+  line-height: 20vh;
+  text-align: center;
+  text-transform: uppercase;
+`
+
+const SquarePlayed = StyledSquare.extend`
+  color: ${({ player }) => (player === 'x' ? 'hsla(6, 59%, 50%, 1)' : 'hsla(145, 63%, 32%, 1)')};
+`
+
+const SquareLost = StyledSquare.extend`
+  color: hsla(0, 0%, 90%, 1);
+`
+
+const SquarePlayable = StyledSquare.extend`
+  cursor: pointer;
+`
+```
+
+Then we can extend our `Square` to use the right styled square. Read through the code below and make sure you understand what we're doing:
+
+```javascript
+// In src/components/Square/index.js
+export default function Square ({
+  handleClick,
+  index,
+  isWinningSquare,
+  player
+}) {
+  if (isUndefined(isWinningSquare)) {
+    return isUndefined(player)
+      ? <SquarePlayable index={index} onClick={handleClick} />
+      : <SquarePlayed index={index} player={player}>{player}</SquarePlayed>
+  }
+
+  if (isUndefined(player)) {
+    return <StyledSquare index={index} />
+  }
+
+  return isWinningSquare
+    ? <SquarePlayed index={index} player={player}>{player}</SquarePlayed>
+    : <SquareLost index={index} player={player}>{player}</SquareLost>
+}
+```
+
+If `isWinningSquare` is `undefined`, then the game is still in play. Squares are either played or playable.
+
+Below that we handle conditions where the game is over. If the square is unplayed, we can use the base `StyledSquare`. As long as we don't pass the `handleClick` function to `onClick`, it remains unplayable.
+
+Finally, we have the squares that were played during the game. If a square is a winning square, we leave it alone (and use `SquarePlayed` as above), but if it is a losing square, we swap in the `SquareLost` component, which greys out the player.
+
+Here's the full code for `src/components/Square/index.js`:
+
+```javascript
+// src/components/Square/index.js
+import React from 'react'
+import styled from 'styled-components'
+import { isUndefined } from 'ramda-adjunct'
+
+const StyledSquare = styled.div`
+  border-color: hsla(0, 0%, 0%, 0.2);
+  border-style: solid;
+  border-width: 0 ${({ index }) => (index % 3 === 2 ? 0 : '2px')}
+    ${({ index }) => (index < 6 ? '2px' : 0)} 0;
+  cursor: default;
+  font-size: 16vh;
+  font-weight: bold;
+  line-height: 20vh;
+  text-align: center;
+  text-transform: uppercase;
+`
+StyledSquare.defaultName = 'StyledSquare'
+
+const SquarePlayed = StyledSquare.extend`
+  color: ${({ player }) => (player === 'x' ? 'hsla(6, 59%, 50%, 1)' : 'hsla(145, 63%, 32%, 1)')};
+`
+SquarePlayed.defaultName = 'SquarePlayed'
+
+const SquareLost = StyledSquare.extend`
+  color: hsla(0, 0%, 90%, 1);
+`
+SquareLost.defaultName = 'SquareLost'
+
+const SquarePlayable = StyledSquare.extend`
+  cursor: pointer;
+`
+SquarePlayable.defaultName = 'SquarePlayable'
+
+export default function Square ({
+  handleClick,
+  index,
+  isWinningSquare,
+  player
+}) {
+  if (isUndefined(isWinningSquare)) {
+    return isUndefined(player)
+      ? <SquarePlayable index={index} onClick={handleClick} />
+      : <SquarePlayed index={index} player={player}>{player}</SquarePlayed>
+  }
+
+  if (isUndefined(player)) {
+    return <StyledSquare index={index} />
+  }
+
+  return isWinningSquare
+    ? <SquarePlayed index={index} player={player}>{player}</SquarePlayed>
+    : <SquareLost index={index} player={player}>{player}</SquareLost>
+}
+
+```
+
+## Connecting it up
+
+Now all that remains is to connect it all up. We'll do this in `src/containers/Square/index.js`. But first, let's write a test to "map state properly to props when the game is over" and add it to `src/containers/Square/index.spec.js`:
+
+```javascript
+// src/containers/Square/index.spec.js
+import React from 'react'
+import { shallow } from 'enzyme'
+import configureStore from 'redux-mock-store'
+
+import Square from '.'
+import { initialState, SQUARE_CLICKED } from '../../state'
+
+const mockStore = configureStore()
+
+describe('containers:Square', () => {
+  it(`maps state and dispatch to props`, () => {
+    const square = 4
+    const store = mockStore({ moves: [0, 3, square] })
+    const wrapper = shallow(<Square index={square} store={store} />)
+
+    expect(wrapper.props()).toEqual(
+      expect.objectContaining({
+        player: 'x',
+        handleClick: expect.any(Function)
+      })
+    )
+  })
+
+  it(`maps state properly to props when the game is over`, () => {
+    const square = 4
+    const store = mockStore({
+      moves: [0, 1, 4, 5, 8],
+      winningSquares: [0, 4, 8],
+      winningPlayer: 'x'
+    })
+    const wrapper = shallow(<Square index={square} store={store} />)
+
+    expect(wrapper.props()).toEqual(
+      expect.objectContaining({
+        isWinningSquare: true
+      })
+    )
+  })
+
+  it(`maps handleClick to dispatch ${SQUARE_CLICKED} action`, () => {
+    const square = 4
+    const store = mockStore(initialState)
+
+    store.dispatch = jest.fn()
+
+    const wrapper = shallow(<Square index={square} store={store} />)
+
+    wrapper.dive().props().onClick()
+
+    expect(store.dispatch).toHaveBeenCalledWith({
+      type: SQUARE_CLICKED,
+      payload: {
+        square
+      }
+    })
+  })
+})
+```
+
+It's pretty straightforward. We'll just show you the code here and let you figure it out:
+
+```javascript
+// src/containers/Square/index.js
+import { connect } from 'react-redux'
+import { contains } from 'ramda'
+import { isNotEmpty } from 'ramda-adjunct'
+
+import Square from '../../components/Square'
+import { getMoves, getWinningSquares, squareClicked } from '../../state'
+import { getPlayer } from '../../utilities'
+
+function mapStateToProps (state, { index }) {
+  const moves = getMoves(state)
+  const winners = getWinningSquares(state) || []
+  const gameIsOver = isNotEmpty(winners)
+  const player = getPlayer(index, moves)
+
+  return gameIsOver
+    ? { player, isWinningSquare: contains(index, winners) }
+    : { player }
+}
+
+function mapDispatchToProps (dispatch, { index }) {
+  return {
+    handleClick: () => dispatch(squareClicked(index))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Square)
+```
+
+## Triggering the check
+
+We don't currently have a way to trigger the check for a win. We'll add this in the next lesson (branch). But we can test it now using Redux DevTools in Chrome. If you open the DevTools, you should see a button at the bottom called "Dispatcher":
+
+![Dispatcher button](/assets/dispatcher-button.png)
+
+If you click on it, you should see an empty action like this:
+
+![Empty action](/assets/empty-action.png)
+
+Let's start by playing out a game like this (start in the upper right and go around the outer squares, then click the center square last):
+
+![All squares played](/assets/all-squares-played.png)
+
+Now, let's add the action to look like this:
+
+```javascript
+{
+  type: 'GAME_OVER',
+  winners: {
+    squares: [0, 2, 4, 6, 8],
+    player: 'x'
+  }
+}
+```
+
+Which will look like this:
+
+![Game over action](/assets/game-over-action.png)
+
+We can then click the "dispatch" button on the far right to dispatch our action:
+
+![Dispatch button](/assets/dispatch-button.png)
+
+Now we should see the board change to reflect the wins, and all squares should be unplayable:
+
+![All squares game over](/assets/all-squares-game-over.png)
+
+That's enough for this step. Let's do a commit:
+
+```bash
+git add -A
+git commit -m "Mark the winning squares"
+git push
+```
+We can run the tests to make sure we have 100% coverage (you may need to run `yarn test` then hit `u` to update a few snapshots). Run `yarn test --coverage` to double check:
+
+![Step 5 100% coverage](/assets/step-05-100-percent-coverage.png)
