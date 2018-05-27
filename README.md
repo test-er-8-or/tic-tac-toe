@@ -471,3 +471,100 @@ git add -A
 git commit -m "Add gameOver action creator"
 git push
 ```
+
+## Handling the GAME_OVER action
+
+So our reducer will take the `squares` and `player` from the `GAME_OVER` action payload and store them in the state as `winningSquares` and `winningPlayer` respectively, flattening out our `winners` object from the payload. We'll start with the tests, of course. Let's make `src/state/reducers/index.spec.js` look like this:
+
+```javascript
+// src/state/reducers/index.spec.js
+import { initialState, rootReducer } from '.'
+import { gameOver, squareClicked } from '..'
+
+describe('state:reducers', () => {
+  describe('rootReducer', () => {
+    it('defaults to the initialState', () => {
+      expect(rootReducer(undefined, {})).toBe(initialState)
+    })
+
+    it('handles an unknown action type by returning the state unchanged', () => {
+      const state = 'state'
+
+      expect(rootReducer(state, {})).toBe(state)
+    })
+
+    it('handles a move by appending the Square number to the moves array', () => {
+      const state = {
+        moves: [4, 0]
+      }
+
+      expect(rootReducer(state, squareClicked(2))).toMatchObject({
+        moves: [4, 0, 2]
+      })
+    })
+
+    it('returns the state unchanged when the square is not supplied', () => {
+      const state = {
+        moves: [4, 0]
+      }
+
+      expect(rootReducer(state, squareClicked())).toMatchObject({
+        moves: [4, 0]
+      })
+    })
+
+    it('adds the winningSquares and the winningPlayer, if any, on GAME_OVER', () => {
+      const state = {
+        moves: [0, 1, 2, 3, 4, 5, 6]
+      }
+
+      expect(rootReducer(state, gameOver([2, 4, 6], 'x'))).toMatchObject({
+        moves: [0, 1, 2, 3, 4, 5, 6],
+        winningSquares: [2, 4, 6],
+        winningPlayer: 'x'
+      })
+    })
+  })
+})
+```
+
+Note that last test. That's our new one. Run the tests with `yarn test` and it fails. Now we'll add the code to make it pass to the reducer in `src/state/reducers/index.js`:
+
+```javascript
+// src/state/reducers/index.js
+import { isUndefined } from 'ramda-adjunct'
+
+import { GAME_OVER, SQUARE_CLICKED } from '..'
+
+const initialState = { moves: [] }
+
+function rootReducer (state = initialState, { payload = {}, type }) {
+  const { square, winners: { squares, player } = {} } = payload
+
+  switch (type) {
+    case GAME_OVER:
+      return {
+        ...state,
+        winningSquares: squares,
+        winningPlayer: player
+      }
+    case SQUARE_CLICKED:
+      return {
+        ...state,
+        moves: isUndefined(square) ? state.moves : [...state.moves, square]
+      }
+    default:
+      return state
+  }
+}
+
+export { initialState, rootReducer }
+```
+
+That makes the tests pass. We haven't added any exports, so no need to change `src/state/index.js` this time. Let's do a commit:
+
+```bash
+git add -A
+git commit -m "Update reducer for GAME_OVER action"
+git push
+```

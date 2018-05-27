@@ -1,5 +1,5 @@
 import { initialState, rootReducer } from '.'
-import { squareClicked } from '..'
+import { gameOver, squareClicked } from '..'
 
 describe('state:reducers', () => {
   describe('rootReducer', () => {
@@ -30,6 +30,18 @@ describe('state:reducers', () => {
 
       expect(rootReducer(state, squareClicked())).toMatchObject({
         moves: [4, 0]
+      })
+    })
+
+    it('adds the winningSquares and the winningPlayer, if any, on GAME_OVER', () => {
+      const state = {
+        moves: [0, 1, 2, 3, 4, 5, 6]
+      }
+
+      expect(rootReducer(state, gameOver([2, 4, 6], 'x'))).toMatchObject({
+        moves: [0, 1, 2, 3, 4, 5, 6],
+        winningSquares: [2, 4, 6],
+        winningPlayer: 'x'
       })
     })
   })
