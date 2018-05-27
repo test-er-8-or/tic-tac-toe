@@ -268,3 +268,206 @@ git add -A
 git commit -m "Add a getWins utility function"
 git push
 ```
+
+## Updating the state
+
+So now we have a utility function that will give us an array of winning combinations. It may return an empty array if no one has won (yet). It may return an array with a single winning combination of squares, which is itself an array. (We call this a two-dimensional array, that is, an array of arrays.) Or, in remote cases, there will be two winning combinations. There will never be three.
+
+A little thought tells us that X, who moves first, will get a maximum of five plays, and that O, who always moves second, will get a maximum of four plays. There are, after all, only nine squares.
+
+As two winning combinations means `2 * 3 === 6`, six squares, it should be obvious that the two combinations must share at least one square, and that the only player who can ever achieve this "double play" is X. If you draw the eight possible wins on the board you will also see that no two combinations ever share _more than one square_.
+
+Keep thinking. Even if it were possible for a player to make plays in six squares, it would still not be possible to have two winning combinations because that would require moving in two squares simultaneously. Otherwise, the first winning combination would end the game, and there would never be another. This leads us to another realisation, which is that the last square played in a double win _must be the shared square_.
+
+Finally, looking at the board, you can see that any square could be the winning square, and that this variously leads to a plus shape, an X shape, an L shape, or a T shape (the L and T might be rotated 90, 180, or 270 degrees). Want to play a game with a double win, maybe for testing? Start in an outer square and go around the outer edge in order in either direction, then play the center square last. That will give you an x or a + win, depending on whether you started in a corner (x) or a side (+) square.
+
+Here are three possible outputs from our `getWins` function:
+
+```jasvascript
+[]                      // no winner (yet)
+[[0, 1, 2]]             // top row
+[[0, 1, 2], [0, 3, 6]]  // top row, left column
+```
+
+Once we have this output, we're going to want to store it in the state. Might also be nice to store the winning player, X or O. Also, we don't actually need an array of arrays. All we care about is which squares were part of the win, so we can _flatten_ our wins array and remove duplicates. That would make `[[0, 1, 2], [0, 3, 6]]` look like this `[0, 1, 2, 3, 6]`.
+
+Our state is managed by Redux, and the way we update it is by dispatching an "action" to our Redux store. Our actions, as you may recall, take the form:
+
+```javascript
+{
+  type: 'NAME_OF_TYPE',
+  payload: {
+    // some payload
+  },
+  meta: {
+    // optional metadata
+  }
+}
+```
+
+So first thing we'll need is an action type. Let's call it `GAME_OVER`. We'll add it to `src/state/constants.js`:
+
+```javascript
+// src/state/constants.js
+export const GAME_OVER = 'GAME_OVER'
+export const SQUARE_CLICKED = 'SQUARE_CLICKED'
+```
+
+You may have noticed that I like to keep things in alphabetical order. This makes it easier to find things when our files get a bit larger and more complex.
+
+We'll want to add this to our `src/state/index.js` imports and exports:
+
+```javascript
+// src/state/index.js
+import { squareClicked } from './actions'
+import { GAME_OVER, SQUARE_CLICKED } from './constants'
+import { initialState, rootReducer } from './reducers'
+import { getMoves } from './selectors'
+import configureStore from './store'
+
+export {
+  configureStore,
+  GAME_OVER,
+  getMoves,
+  initialState,
+  rootReducer,
+  SQUARE_CLICKED,
+  squareClicked
+}
+```
+
+Again, note that my exports are alphabetised, and my imports are alphabetised _by filename_, so they align with the files in the navigation tree in my VSCode editor. You may find this a bit much, but I find it makes finding things easier when I come back to my code later.
+
+What will our state look like after the above array of winning combinations is returned from our `getWins` function. We want to store the winning squares and the winning player, right? So why not something like this:
+
+```javascript
+const state = {
+  moves: [1, 4, 2, 5, 3, 7, 6, 8, 0],
+  winningSquares: [0, 1, 2, 3, 6],
+  winningPlayer: 'x'
+}
+```
+
+Or, here is a simpler win by O:
+
+```javascript
+const state = {
+  moves: [3, 4, 0, 6, 1, 2],
+  winningSquares: [2, 4, 6],
+  winningPlayer: 'o'
+}
+```
+
+We can simply pass the `winningSquares` and the `winningPlayer` into our action's `payload`:
+
+```javascript
+const action = {
+  type: GAME_OVER,
+  payload: {
+    winningSquares: [0, 1, 2, 3, 6],
+    winningPlayer: 'x'
+  }
+}
+```
+
+I chose the double win here to show that we only need to store the winning squares, not the winning combinations, but we could do it either way.
+
+So let's create our action creator test first. Change `src/state/actions/index.spec.js` to this:
+
+```javascript
+// src/state/actions/index.spec.js
+import { gameOver, squareClicked } from '.'
+import { GAME_OVER, SQUARE_CLICKED } from '..'
+
+describe('state:actions', () => {
+  describe('gameOver', () => {
+    it('produces the correct action when the game is over', () => {
+      const squares = [0, 4, 8, 2, 6]
+      const player = 'x'
+
+      expect(gameOver(squares, player)).toMatchObject({
+        type: GAME_OVER,
+        payload: {
+          winners: {
+            squares,
+            player
+          }
+        }
+      })
+    })
+  })
+
+  describe('squareClicked', () => {
+    it('produces the correct action for clicking a Square', () => {
+      const square = 4
+
+      expect(squareClicked(square)).toMatchObject({
+        type: SQUARE_CLICKED,
+        payload: {
+          square: 4
+        }
+      })
+    })
+  })
+})
+```
+
+We'll keep the action simple, with just `squares` and `player`. Run the tests with `yarn test` and it will fail, of course. Now let's add the `gameOver` action creator to make this test pass. In `src/state/actions/index.js`:
+
+```javascript
+// src/state/actions/index.js
+import { GAME_OVER, SQUARE_CLICKED } from '..'
+
+function gameOver (squares, player) {
+  return {
+    type: GAME_OVER,
+    payload: {
+      winners: {
+        squares,
+        player
+      }
+    }
+  }
+}
+
+function squareClicked (square) {
+  return {
+    type: SQUARE_CLICKED,
+    payload: {
+      square
+    }
+  }
+}
+
+export { gameOver, squareClicked }
+```
+
+And now the tests pass. Add it to our `src/state/index.js` imports and exports:
+
+```javascript
+// src/state/index.js
+import { gameOver, squareClicked } from './actions'
+import { GAME_OVER, SQUARE_CLICKED } from './constants'
+import { initialState, rootReducer } from './reducers'
+import { getMoves } from './selectors'
+import configureStore from './store'
+
+export {
+  configureStore,
+  GAME_OVER,
+  gameOver,
+  getMoves,
+  initialState,
+  rootReducer,
+  SQUARE_CLICKED,
+  squareClicked
+}
+```
+
+And we're good to go. But we'll need to consume this action in the reducer, so let's do that next, after a commit:
+
+```bash
+git add -A
+git commit -m "Add gameOver action creator"
+git push
+```
