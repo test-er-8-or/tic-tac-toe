@@ -24,12 +24,14 @@ This is the current practice for Redux actions: a `type`, a `payload`, and, if n
 We'll have a very limited, _enumerated_ set of action types, so let's create constants for the type names. First, let's create a folder to hold our state management code under the `src` folder and call it `src/state`. Then in there, let's create a `src/state/constants.js` file and a `src/state/index.js` file. Add the following to the `constants.js` file:
 
 ```javascript
+// src/state/constants.js
 export const SQUARE_CLICKED = 'SQUARE_CLICKED'
 ```
 
 Pretty simple file, eh? Now we'll do our regular import/export in the `src/state/index.js` file:
 
 ```javascript
+// src/state/index.js
 import { SQUARE_CLICKED } from './constants'
 
 export { SQUARE_CLICKED }
@@ -52,6 +54,7 @@ And we'll add this file to our list of files the coverage tool should ignore in 
 Now we can use that action type to create our action. We're going to make an action creator function for our `squareClicked` action. Create a new folder under `src/state` at `src/state/actions` and an `index.spec.js` file in that folder. Now we'll add our test:
 
 ```javascript
+// src/state/actions/index.spec.js
 import { squareClicked } from '.'
 import { SQUARE_CLICKED } from '..'
 
@@ -74,6 +77,7 @@ describe('state:actions', () => {
 Run the tests (use `p` and `actions` to filter on the actions folder) and you should see it fail. Now let's make it pass. Create a `src/state/actions/index.js` file with the following code:
 
 ```javascript
+// src/state/actions/index.js
 import { SQUARE_CLICKED } from '..'
 
 function squareClicked (square) {
@@ -91,6 +95,7 @@ export { squareClicked }
 By now it should be obvious how this works. And the test should be passing. Let's add that to our `src/state/index.js` file:
 
 ```javascript
+// src/state/index.js
 import { squareClicked } from './actions'
 import { SQUARE_CLICKED } from './constants'
 
@@ -114,6 +119,7 @@ Next we need a function that will accept that action and our current state objec
 So create a `src/state/reducers` folder, and an `index.spec.js` file in it. And then write this test:
 
 ```javascript
+// src/state/reducers/index.spec.js
 import { rootReducer } from '.'
 
 describe('state:reducers', () => {
@@ -130,6 +136,7 @@ describe('state:reducers', () => {
 You may have noticed that the tests in watch mode only run on files chagned since the last commit, so we don't really need to filter them. Run the tests with `yarn test` and you should see the reducers test fail. Now we need to make it pass. So create a `src/state/reducers/index.js` file and add the following:
 
 ```javascript
+// src/state/reducers/index.js
 function rootReducer (state, action) {
   switch (action && action.type) {
     default:
@@ -145,6 +152,7 @@ Ha, ha. This couldn't be much simpler! It takes a state and an action, switches 
 Let's create a new test first. Here's our updated `src/state/reducers/index.spec.js`:
 
 ```javascript
+// src/state/reducers/index.spec.js
 import { rootReducer } from '.'
 import { squareClicked } from '..'
 
@@ -173,9 +181,10 @@ That's going to fail something like this:
 
 ![Reducer test fail](./assets/reducer-test-fail.png)
 
-As you can see, it did what we'd expect: returned the state unchanged. So let's fix that. Here is our new `src/state/reducer/index.js` file:
+As you can see, it did what we'd expect: returned the state unchanged. So let's fix that. Here is our new `src/state/reducers/index.js` file:
 
 ```javascript
+// src/state/reducers/index.js
 import { isUndefined } from 'ramda-adjunct'
 
 import { SQUARE_CLICKED } from '..'
@@ -216,6 +225,7 @@ Our test passes with flying colours, so we now have a `moves` array in state tha
 Now let's update `src/state/index.js`:
 
 ```javascript
+// src/state/index.js
 import { squareClicked } from './actions'
 import { SQUARE_CLICKED } from './constants'
 import { initialState, rootReducer } from './reducers'
@@ -240,6 +250,7 @@ function rootReducer (state = initialState, { payload = {}, type }) {
 We've tested the reducer with and without a payload, so that can't be it. But have we tested that the state defaults to the `initialState`? No, we haven't. So let's add a test for that. We'll need to import the initialState, too. Here's our updated `src/state/reducers/index.spec.js`:
 
 ```javascript
+// src/state/reducers/index.spec.js
 import { initialState, rootReducer } from '.'
 import { squareClicked } from '..'
 
@@ -279,6 +290,7 @@ moves: isUndefined(payload.square)
 We need to add a test that passes the action, but without a square. Here's our new `src/state/reducers/index.spec.js` file. The new test is at the bottom:
 
 ```javascript
+// src/state/reducers/index.spec.js
 import { initialState, rootReducer } from '.'
 import { squareClicked } from '..'
 
@@ -336,6 +348,7 @@ We also want to be able to retrieve our moves array from the state. We'll make a
 Create a `src/state/selectors` folder and a `src/state/selectors/index.spec.js` file in it. Then add our test to the `index.spec.js` file:
 
 ```javascript
+// src/state/selectors/index.spec.js
 import { getMoves } from '.'
 
 describe('state:selectors', () => {
@@ -353,6 +366,7 @@ describe('state:selectors', () => {
 This fails the test. Now let's add the code in `src/state/selectors/index.js` to make it pass:
 
 ```javascript
+// src/state/selectors/index.js
 export function getMoves ({ moves }) {
   return moves
 }
@@ -361,6 +375,7 @@ export function getMoves ({ moves }) {
 Finally, let's update our `src/state/index.js` file to import and export our selectors:
 
 ```javascript
+// src/state/index.js
 import { squareClicked } from './actions'
 import { SQUARE_CLICKED } from './constants'
 import { initialState, rootReducer } from './reducers'
@@ -394,6 +409,7 @@ Our Redux store will wrap up our state and provide three methods for manipulatin
 On the basis of this, we can write our test:
 
 ```javascript
+// src/state/store/index.spec.js
 import configureStore from '.'
 
 describe('state:store', () => {
@@ -410,6 +426,7 @@ describe('state:store', () => {
 That fails, of course. Next, we'll create our store to make the test pass. In `src/state/store/index.js`, put:
 
 ```javascript
+// src/state/store/index.js
 import { createStore } from 'redux'
 
 import { rootReducer } from '..'
@@ -422,6 +439,7 @@ export default function configureStore () {
 And we'll add our store to our imports and exports in the `src/state/index.js` file, of course:
 
 ```javascript
+// src/state/index.js
 import { squareClicked } from './actions'
 import { SQUARE_CLICKED } from './constants'
 import { initialState, rootReducer } from './reducers'
@@ -457,6 +475,7 @@ First we need to import our store into the context. We'll use a `react-redux` pr
 Open the `src/index.js` file and make it look like this:
 
 ```javascript
+// src/index.js
 import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
@@ -488,6 +507,7 @@ The `<Provider>` does the rest. We can now access the store in our components by
 Now we will connect our `App` component to the store. Here's what our `src/components/App/index.js` file currently looks like:
 
 ```javascript
+// src/components/App/index.js
 import React from 'react'
 import styled from 'styled-components'
 import { times } from 'ramda'
@@ -617,6 +637,7 @@ We take the `markSquare` function and create a click handler for each Square tha
 Now our `src/components/App/index.js` file should look like this:
 
 ```javascript
+//src/components/App/index.js
 import React from 'react'
 import styled from 'styled-components'
 import { times } from 'ramda'
@@ -673,7 +694,6 @@ function mapDispatchToProps (dispatch) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)
-
 ```
 
 When we try to run our tests, however, we get an error that looks like this:
@@ -719,6 +739,7 @@ Let's begin by stripping the `App` down to the bare minimum. We'll just have it 
 Here is what `src/components/App/index.js` should look like now:
 
 ```javascript
+// src/components/App/index.js
 import React from 'react'
 import styled from 'styled-components'
 import { times } from 'ramda'
@@ -750,6 +771,7 @@ export default function App () {
 So much simpler! We'll also need to change our `src/components/App/index.spec.js` file to import the default export. And we only need one snapshot as the `App` will never rerender! Here is the simplified code:
 
 ```javascript
+// src/components/App/index.spec.js
 import React from 'react'
 import { shallow } from 'enzyme'
 
@@ -805,6 +827,7 @@ function mapDispatchToProps (dispatch, { index }) {
 To finish it up, we wrap our state management around the `Square` using `connect`. Here is our final container (`src/containers/Square/index.js`):
 
 ```javascript
+// src/containers/Square/index.js
 import { connect } from 'react-redux'
 
 import Square from '../../components/Square'
@@ -828,9 +851,19 @@ function mapDispatchToProps (dispatch, { index }) {
 export default connect(mapStateToProps, mapDispatchToProps)(Square)
 ```
 
+Let's add the new `Square` container to our `src/containers/index.js` file:
+
+```javascript
+// src/containers/index.js
+import Square from './Square'
+
+export { Square }
+```
+
 Let's clean up the `src/components/Square/index.js` component so we only pass what's needed:
 
 ```javascript
+// src/components/Square/index.js
 import React from 'react'
 import styled from 'styled-components'
 import { isUndefined } from 'ramda-adjunct'
@@ -994,6 +1027,7 @@ Beauty!
 Here's our final `src/containers/Square/index.spec.js`:
 
 ```javascript
+// src/containers/Square/index.spec.js
 import React from 'react'
 import { shallow } from 'enzyme'
 import configureStore from 'redux-mock-store'
@@ -1042,6 +1076,7 @@ describe('containers:Square', () => {
 It would be nice to see what's happening in our state. The [redux-devtools-extension](http://extension.remotedev.io/) is just what we need. We added it way back during set up. Now let's put it to use. All we need is one little change in one file. In `src/state/store/index.js` we'll import the `devToolsEnhancer`, and then we'll use it to enhance the store: `createStore(rootReducer, devToolsEnhancer())`. Here's our new code:
 
 ```javascript
+// src/state/store/index.js
 import { createStore } from 'redux'
 import { devToolsEnhancer } from 'redux-devtools-extension'
 
