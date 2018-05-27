@@ -687,7 +687,7 @@ There is a lot of discussion about what to test when working with containers. We
 Now let's change our `src/components/App/index.spec.js` file to import our component `App`, as well as our various functions, instead of the container `App`:
 
 ```javascript
-import { App } from '.'
+import App from '.'
 ```
 
 Now if we run our coverage tests (`yarn test --coverage`), we get no errors, but we find that our `App` test suite is missing quite a few tests:
@@ -776,7 +776,7 @@ import { getMoves, squareClicked } from '../../state'
 import { getPlayer } from '../../utilities'
 ```
 
-Next, we'll create a `mapStateToProps` function to get the `moves` array out of the state, _and then we'll use `getPlayer` to figure out the player and will inject that value into the `Square`:
+Next, we'll create a `mapStateToProps` function to get the `moves` array out of the state, and then we'll use `getPlayer` to figure out the player and will inject that value into the `Square`:
 
 ```javascript
 function mapStateToProps (state, { index }) {
@@ -828,7 +828,7 @@ function mapDispatchToProps (dispatch, { index }) {
 export default connect(mapStateToProps, mapDispatchToProps)(Square)
 ```
 
-One last thing. Let's clean up the `src/components/Square/index.js` component so we only pass what's needed:
+Let's clean up the `src/components/Square/index.js` component so we only pass what's needed:
 
 ```javascript
 import React from 'react'
@@ -854,6 +854,41 @@ export default function Square ({ handleClick, index, player }) {
   return isUndefined(player)
     ? <StyledSquare index={index} onClick={handleClick} />
     : <StyledSquare index={index} player={player}>{player}</StyledSquare>
+}
+```
+
+Finally, let's update our `src/components/App/index.js` file so that we import the `Square` from `src/containers` rather than from `src/components`. We want the _connected_ version, right? The one that will interact with our new state.
+
+Update `src/components/App/index.js` to look like this:
+
+```javascript
+// src/components/App/index.js
+import React from 'react'
+import styled from 'styled-components'
+import { times } from 'ramda'
+
+import { Board } from '..'
+import { Square } from '../../containers'
+
+const StyledApp = styled.div`
+  display: grid;
+  font-family: 'Verdana', sans-serif;
+  grid-template-areas: 'board';
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+`
+StyledApp.defaultName = 'StyledApp'
+
+export default function App () {
+  return (
+    <StyledApp>
+      <Board>
+        {times(square => <Square key={square} index={square} />, 9)}
+      </Board>
+    </StyledApp>
+  )
 }
 ```
 
