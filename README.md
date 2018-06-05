@@ -991,12 +991,10 @@ Now, let's add the action to look like this:
 
 ```javascript
 {
-  type: 'GAME_OVER',
-  winners: {
-    squares: [0, 2, 4, 6, 8],
-    player: 'x'
-  }
+ type:'GAME_OVER',
+ payload: {winners: { squares: [0, 2, 4, 6, 8], player:'x'}}
 }
+
 ```
 
 Which will look like this:
