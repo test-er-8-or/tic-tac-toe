@@ -1,186 +1,437 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`components:Square renders the Square with the proper cursor if a click handler is provided 1`] = `
-.c0 {
-  border-color: hsla(0,0%,0%,0.2);
+<StyledComponent
+  forwardedClass={
+    Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "attrs": undefined,
+      "componentStyle": ComponentStyle {
+        "componentId": "sc-bxivhb",
+        "isStatic": false,
+        "rules": Array [
+          "
+  border-color: hsla(0, 0%, 0%, 0.2);
   border-style: solid;
-  border-width: 0 2px 2px 0;
+  border-width: 0 ",
+          [Function],
+          "
+    ",
+          [Function],
+          " 0;
   cursor: default;
   font-size: 16vh;
   font-weight: bold;
   line-height: 20vh;
   text-align: center;
   text-transform: uppercase;
+",
+          "
   cursor: pointer;
-}
-
-<div
-  className="c0"
+",
+        ],
+      },
+      "defaultName": "SquarePlayable",
+      "displayName": "Styled(styled.div)",
+      "render": [Function],
+      "styledComponentId": "sc-bxivhb",
+      "target": "div",
+      "warnTooManyClasses": [Function],
+      "withComponent": [Function],
+    }
+  }
+  forwardedRef={null}
+  index={0}
   onClick={[Function]}
 />
 `;
 
 exports[`components:Square renders the Square with the proper styles for an unplayed square after game over 1`] = `
-.c0 {
-  border-color: hsla(0,0%,0%,0.2);
+<StyledComponent
+  forwardedClass={
+    Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "attrs": undefined,
+      "componentStyle": ComponentStyle {
+        "componentId": "sc-bdVaJa",
+        "isStatic": false,
+        "rules": Array [
+          "
+  border-color: hsla(0, 0%, 0%, 0.2);
   border-style: solid;
-  border-width: 0 2px 2px 0;
+  border-width: 0 ",
+          [Function],
+          "
+    ",
+          [Function],
+          " 0;
   cursor: default;
   font-size: 16vh;
   font-weight: bold;
   line-height: 20vh;
   text-align: center;
   text-transform: uppercase;
-}
-
-<div
-  className="c0"
+",
+        ],
+      },
+      "defaultName": "StyledSquare",
+      "displayName": "styled.div",
+      "render": [Function],
+      "styledComponentId": "sc-bdVaJa",
+      "target": "div",
+      "warnTooManyClasses": [Function],
+      "withComponent": [Function],
+    }
+  }
+  forwardedRef={null}
+  index={4}
 />
 `;
 
 exports[`components:Square renders the Square with the proper styles for player O in the top left square 1`] = `
-.c0 {
-  border-color: hsla(0,0%,0%,0.2);
+<StyledComponent
+  forwardedClass={
+    Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "attrs": undefined,
+      "componentStyle": ComponentStyle {
+        "componentId": "sc-bwzfXH",
+        "isStatic": false,
+        "rules": Array [
+          "
+  border-color: hsla(0, 0%, 0%, 0.2);
   border-style: solid;
-  border-width: 0 2px 2px 0;
+  border-width: 0 ",
+          [Function],
+          "
+    ",
+          [Function],
+          " 0;
   cursor: default;
   font-size: 16vh;
   font-weight: bold;
   line-height: 20vh;
   text-align: center;
   text-transform: uppercase;
-  color: hsla(145,63%,32%,1);
-}
-
-<div
-  className="c0"
+",
+          "
+  color: ",
+          [Function],
+          ";
+",
+        ],
+      },
+      "defaultName": "SquarePlayed",
+      "displayName": "Styled(styled.div)",
+      "render": [Function],
+      "styledComponentId": "sc-bwzfXH",
+      "target": "div",
+      "warnTooManyClasses": [Function],
+      "withComponent": [Function],
+    }
+  }
+  forwardedRef={null}
+  index={0}
+  player="o"
 >
   o
-</div>
+</StyledComponent>
 `;
 
 exports[`components:Square renders the Square with the proper styles for player O loss 1`] = `
-.c0 {
-  border-color: hsla(0,0%,0%,0.2);
+<StyledComponent
+  forwardedClass={
+    Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "attrs": undefined,
+      "componentStyle": ComponentStyle {
+        "componentId": "sc-htpNat",
+        "isStatic": false,
+        "rules": Array [
+          "
+  border-color: hsla(0, 0%, 0%, 0.2);
   border-style: solid;
-  border-width: 0 0 0 0;
+  border-width: 0 ",
+          [Function],
+          "
+    ",
+          [Function],
+          " 0;
   cursor: default;
   font-size: 16vh;
   font-weight: bold;
   line-height: 20vh;
   text-align: center;
   text-transform: uppercase;
-  color: hsla(0,0%,90%,1);
-}
-
-<div
-  className="c0"
+",
+          "
+  color: hsla(0, 0%, 90%, 1);
+",
+        ],
+      },
+      "defaultName": "SquareLost",
+      "displayName": "Styled(styled.div)",
+      "render": [Function],
+      "styledComponentId": "sc-htpNat",
+      "target": "div",
+      "warnTooManyClasses": [Function],
+      "withComponent": [Function],
+    }
+  }
+  forwardedRef={null}
+  index={8}
+  player="o"
 >
   o
-</div>
+</StyledComponent>
 `;
 
 exports[`components:Square renders the Square with the proper styles for player X in the bottom left square 1`] = `
-.c0 {
-  border-color: hsla(0,0%,0%,0.2);
+<StyledComponent
+  forwardedClass={
+    Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "attrs": undefined,
+      "componentStyle": ComponentStyle {
+        "componentId": "sc-bwzfXH",
+        "isStatic": false,
+        "rules": Array [
+          "
+  border-color: hsla(0, 0%, 0%, 0.2);
   border-style: solid;
-  border-width: 0 2px 0 0;
+  border-width: 0 ",
+          [Function],
+          "
+    ",
+          [Function],
+          " 0;
   cursor: default;
   font-size: 16vh;
   font-weight: bold;
   line-height: 20vh;
   text-align: center;
   text-transform: uppercase;
-  color: hsla(6,59%,50%,1);
-}
-
-<div
-  className="c0"
+",
+          "
+  color: ",
+          [Function],
+          ";
+",
+        ],
+      },
+      "defaultName": "SquarePlayed",
+      "displayName": "Styled(styled.div)",
+      "render": [Function],
+      "styledComponentId": "sc-bwzfXH",
+      "target": "div",
+      "warnTooManyClasses": [Function],
+      "withComponent": [Function],
+    }
+  }
+  forwardedRef={null}
+  index={6}
+  player="x"
 >
   x
-</div>
+</StyledComponent>
 `;
 
 exports[`components:Square renders the Square with the proper styles for player X in the bottom right square 1`] = `
-.c0 {
-  border-color: hsla(0,0%,0%,0.2);
+<StyledComponent
+  forwardedClass={
+    Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "attrs": undefined,
+      "componentStyle": ComponentStyle {
+        "componentId": "sc-bwzfXH",
+        "isStatic": false,
+        "rules": Array [
+          "
+  border-color: hsla(0, 0%, 0%, 0.2);
   border-style: solid;
-  border-width: 0 0 0 0;
+  border-width: 0 ",
+          [Function],
+          "
+    ",
+          [Function],
+          " 0;
   cursor: default;
   font-size: 16vh;
   font-weight: bold;
   line-height: 20vh;
   text-align: center;
   text-transform: uppercase;
-  color: hsla(6,59%,50%,1);
-}
-
-<div
-  className="c0"
+",
+          "
+  color: ",
+          [Function],
+          ";
+",
+        ],
+      },
+      "defaultName": "SquarePlayed",
+      "displayName": "Styled(styled.div)",
+      "render": [Function],
+      "styledComponentId": "sc-bwzfXH",
+      "target": "div",
+      "warnTooManyClasses": [Function],
+      "withComponent": [Function],
+    }
+  }
+  forwardedRef={null}
+  index={8}
+  player="x"
 >
   x
-</div>
+</StyledComponent>
 `;
 
 exports[`components:Square renders the Square with the proper styles for player X in the top left square 1`] = `
-.c0 {
-  border-color: hsla(0,0%,0%,0.2);
+<StyledComponent
+  forwardedClass={
+    Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "attrs": undefined,
+      "componentStyle": ComponentStyle {
+        "componentId": "sc-bwzfXH",
+        "isStatic": false,
+        "rules": Array [
+          "
+  border-color: hsla(0, 0%, 0%, 0.2);
   border-style: solid;
-  border-width: 0 2px 2px 0;
+  border-width: 0 ",
+          [Function],
+          "
+    ",
+          [Function],
+          " 0;
   cursor: default;
   font-size: 16vh;
   font-weight: bold;
   line-height: 20vh;
   text-align: center;
   text-transform: uppercase;
-  color: hsla(6,59%,50%,1);
-}
-
-<div
-  className="c0"
+",
+          "
+  color: ",
+          [Function],
+          ";
+",
+        ],
+      },
+      "defaultName": "SquarePlayed",
+      "displayName": "Styled(styled.div)",
+      "render": [Function],
+      "styledComponentId": "sc-bwzfXH",
+      "target": "div",
+      "warnTooManyClasses": [Function],
+      "withComponent": [Function],
+    }
+  }
+  forwardedRef={null}
+  index={0}
+  player="x"
 >
   x
-</div>
+</StyledComponent>
 `;
 
 exports[`components:Square renders the Square with the proper styles for player X in the top right square 1`] = `
-.c0 {
-  border-color: hsla(0,0%,0%,0.2);
+<StyledComponent
+  forwardedClass={
+    Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "attrs": undefined,
+      "componentStyle": ComponentStyle {
+        "componentId": "sc-bwzfXH",
+        "isStatic": false,
+        "rules": Array [
+          "
+  border-color: hsla(0, 0%, 0%, 0.2);
   border-style: solid;
-  border-width: 0 0 2px 0;
+  border-width: 0 ",
+          [Function],
+          "
+    ",
+          [Function],
+          " 0;
   cursor: default;
   font-size: 16vh;
   font-weight: bold;
   line-height: 20vh;
   text-align: center;
   text-transform: uppercase;
-  color: hsla(6,59%,50%,1);
-}
-
-<div
-  className="c0"
+",
+          "
+  color: ",
+          [Function],
+          ";
+",
+        ],
+      },
+      "defaultName": "SquarePlayed",
+      "displayName": "Styled(styled.div)",
+      "render": [Function],
+      "styledComponentId": "sc-bwzfXH",
+      "target": "div",
+      "warnTooManyClasses": [Function],
+      "withComponent": [Function],
+    }
+  }
+  forwardedRef={null}
+  index={2}
+  player="x"
 >
   x
-</div>
+</StyledComponent>
 `;
 
 exports[`components:Square renders the Square with the proper styles for player X win 1`] = `
-.c0 {
-  border-color: hsla(0,0%,0%,0.2);
+<StyledComponent
+  forwardedClass={
+    Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "attrs": undefined,
+      "componentStyle": ComponentStyle {
+        "componentId": "sc-bwzfXH",
+        "isStatic": false,
+        "rules": Array [
+          "
+  border-color: hsla(0, 0%, 0%, 0.2);
   border-style: solid;
-  border-width: 0 0 0 0;
+  border-width: 0 ",
+          [Function],
+          "
+    ",
+          [Function],
+          " 0;
   cursor: default;
   font-size: 16vh;
   font-weight: bold;
   line-height: 20vh;
   text-align: center;
   text-transform: uppercase;
-  color: hsla(6,59%,50%,1);
-}
-
-<div
-  className="c0"
+",
+          "
+  color: ",
+          [Function],
+          ";
+",
+        ],
+      },
+      "defaultName": "SquarePlayed",
+      "displayName": "Styled(styled.div)",
+      "render": [Function],
+      "styledComponentId": "sc-bwzfXH",
+      "target": "div",
+      "warnTooManyClasses": [Function],
+      "withComponent": [Function],
+    }
+  }
+  forwardedRef={null}
+  index={8}
+  player="x"
 >
   x
-</div>
+</StyledComponent>
 `;

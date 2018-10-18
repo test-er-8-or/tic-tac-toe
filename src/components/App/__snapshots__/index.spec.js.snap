@@ -1,18 +1,36 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`components:App renders the App with a blank game board and nine squares 1`] = `
-.c0 {
+<StyledComponent
+  forwardedClass={
+    Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "attrs": undefined,
+      "componentStyle": ComponentStyle {
+        "componentId": "sc-EHOje",
+        "isStatic": true,
+        "rules": Array [
+          "
   display: grid;
-  font-family: 'Verdana',sans-serif;
+  font-family: 'Verdana', sans-serif;
   grid-template-areas: 'board';
   height: 100vh;
   margin: 0;
   padding: 0;
   width: 100vw;
-}
-
-<div
-  className="c0"
+",
+        ],
+      },
+      "defaultName": "StyledApp",
+      "displayName": "styled.div",
+      "render": [Function],
+      "styledComponentId": "sc-EHOje",
+      "target": "div",
+      "warnTooManyClasses": [Function],
+      "withComponent": [Function],
+    }
+  }
+  forwardedRef={null}
 >
   <styled.div>
     <Connect(Square)
@@ -52,5 +70,5 @@ exports[`components:App renders the App with a blank game board and nine squares
       key="8"
     />
   </styled.div>
-</div>
+</StyledComponent>
 `;
