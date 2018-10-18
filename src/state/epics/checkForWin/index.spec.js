@@ -51,7 +51,7 @@ jest.mock('../../../utilities', () => ({
     .mockReturnValue(['x', 'o', 'x', 'o', 'x', 'o', 'x', 'o', 'x']), // Double win [0, 1, 2, 5, 8, 7, 6, 3, 4]
   getWins: jest
     .fn()
-    .mockReturnValueOnce() // Check but no win
+    .mockReturnValueOnce([]) // Check but no win
     .mockReturnValueOnce([[0, 4, 8]]) // Check and win
     .mockReturnValueOnce([]) // Check and tie
     .mockReturnValue([[0, 4, 8], [2, 4, 6]]) // Check and win
@@ -60,8 +60,10 @@ jest.mock('../../../utilities', () => ({
 describe('epics', function () {
   describe('checkForWin', function () {
     it(`checks for and responds to wins correctly`, function () {
-      const epicMiddleware = createEpicMiddleware(checkForWinEpic)
+      const epicMiddleware = createEpicMiddleware()
       const store = configureMockStore([epicMiddleware])({})
+      epicMiddleware.run(checkForWinEpic)
+
       const action = squareClicked()
 
       store.dispatch(action)
@@ -72,7 +74,6 @@ describe('epics', function () {
       store.dispatch(action)
 
       expect(gameOver.mock.calls).toEqual([
-        [[0, 4, 8, 2, 6], 'x'],
         [[0, 4, 8], 'x'],
         [[]],
         [[0, 4, 8, 2, 6], 'x']
@@ -81,7 +82,6 @@ describe('epics', function () {
         action,
         action,
         action,
-        gameOver(),
         action,
         gameOver(),
         action,
@@ -89,8 +89,6 @@ describe('epics', function () {
         action,
         gameOver()
       ])
-
-      epicMiddleware.replaceEpic(checkForWinEpic)
     })
   })
 })
