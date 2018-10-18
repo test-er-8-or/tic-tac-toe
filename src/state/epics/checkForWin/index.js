@@ -4,16 +4,14 @@ import { ofType } from 'redux-observable'
 import { head, length, union } from 'ramda'
 import { isNonEmptyArray } from 'ramda-adjunct'
 
-import { gameOver } from '../../actions'
-import { SQUARE_CLICKED } from '../../constants'
-import { getMoves } from '../../selectors'
+import { getMoves, gameOver, SQUARE_CLICKED } from '../..'
 import { getBoard, getWins } from '../../../utilities'
 
 export default function checkForWinEpic (action$, state$) {
   return action$.pipe(
     ofType(SQUARE_CLICKED),
     withLatestFrom(state$),
-    mergeMap(([, state]) => {
+    mergeMap(([{ payload }, state]) => {
       const moves = getMoves(state)
       const plays = length(moves)
 
