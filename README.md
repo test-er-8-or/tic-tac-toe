@@ -246,7 +246,7 @@ For this, we'll need to import our `getMoves` selector to retrieve the moves fro
 // src/state/epics/checkForWin/index.js
 import { of } from 'rxjs'
 import { mergeMap, withLatestFrom } from 'rxjs/operators'
-import { ofType } from 'redux-observable
+import { ofType } from 'redux-observable'
 import { head, length, union } from 'ramda'
 import { isNonEmptyArray } from 'ramda-adjunct'
 
