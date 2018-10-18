@@ -217,7 +217,7 @@ You can probably see a potential problem here. Once we pass a new action back to
 // src/state/epics/checkForWin/index.js
 import { of } from 'rxjs'
 import { mergeMap, withLatestFrom } from 'rxjs/operators'
-import { ofType } from 'redux-observable
+import { ofType } from 'redux-observable'
 
 import { SQUARE_CLICKED } from '../..'
 
