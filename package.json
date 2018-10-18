@@ -21,8 +21,12 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "format": "prettier-standard 'src/**/*js'",
-    "precommit": "lint-staged",
     "eject": "react-scripts eject"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
   "lint-staged": {
     "linters": {
