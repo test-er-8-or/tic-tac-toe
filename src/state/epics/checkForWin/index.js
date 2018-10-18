@@ -1,6 +1,6 @@
-import { Observable } from 'rxjs/Observable'
-import 'rxjs/add/operator/mergeMap'
-import 'rxjs/add/observable/of'
+import { of } from 'rxjs'
+import { mergeMap, withLatestFrom } from 'rxjs/operators'
+import { ofType } from 'redux-observable'
 import { head, length, union } from 'ramda'
 import { isNonEmptyArray } from 'ramda-adjunct'
 
@@ -9,29 +9,33 @@ import { SQUARE_CLICKED } from '../../constants'
 import { getMoves } from '../../selectors'
 import { getBoard, getWins } from '../../../utilities'
 
-export default function checkForWinEpic (action$, store) {
-  return action$.ofType(SQUARE_CLICKED).mergeMap(() => {
-    const moves = getMoves(store.getState())
-    const plays = length(moves)
+export default function checkForWinEpic (action$, state$) {
+  return action$.pipe(
+    ofType(SQUARE_CLICKED),
+    withLatestFrom(state$),
+    mergeMap(([, state]) => {
+      const moves = getMoves(state)
+      const plays = length(moves)
 
-    if (plays < 5) {
-      return Observable.of()
-    }
+      if (plays < 5) {
+        return of()
+      }
 
-    const board = getBoard(moves)
-    const wins = getWins(board)
+      const board = getBoard(moves)
+      const wins = getWins(board)
 
-    if (isNonEmptyArray(wins)) {
-      const squares = length(wins) < 2 ? head(wins) : union(...wins)
-      const player = board[head(squares)]
+      if (isNonEmptyArray(wins)) {
+        const squares = length(wins) < 2 ? head(wins) : union(...wins)
+        const player = board[head(squares)]
 
-      return Observable.of(gameOver(squares, player))
-    }
+        return of(gameOver(squares, player))
+      }
 
-    if (plays > 8) {
-      return Observable.of(gameOver([]))
-    }
+      if (plays > 8) {
+        return of(gameOver([]))
+      }
 
-    return Observable.of()
-  })
+      return of()
+    })
+  )
 }
