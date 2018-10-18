@@ -2,8 +2,7 @@ import configureMockStore from 'redux-mock-store'
 import { createEpicMiddleware } from 'redux-observable'
 
 import checkForWinEpic from './'
-import { gameOver, squareClicked } from '../../actions'
-import { getMoves } from '../../selectors'
+import { getMoves, gameOver, squareClicked } from '../..'
 import { getBoard, getWins } from '../../../utilities'
 
 jest.mock('../../actions', () => ({
