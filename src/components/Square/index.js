@@ -16,17 +16,18 @@ const StyledSquare = styled.div`
 `
 StyledSquare.defaultName = 'StyledSquare'
 
-const SquarePlayed = StyledSquare.extend`
-  color: ${({ player }) => (player === 'x' ? 'hsla(6, 59%, 50%, 1)' : 'hsla(145, 63%, 32%, 1)')};
+const SquarePlayed = styled(StyledSquare)`
+  color: ${({ player }) =>
+    player === 'x' ? 'hsla(6, 59%, 50%, 1)' : 'hsla(145, 63%, 32%, 1)'};
 `
 SquarePlayed.defaultName = 'SquarePlayed'
 
-const SquareLost = StyledSquare.extend`
+const SquareLost = styled(StyledSquare)`
   color: hsla(0, 0%, 90%, 1);
 `
 SquareLost.defaultName = 'SquareLost'
 
-const SquarePlayable = StyledSquare.extend`
+const SquarePlayable = styled(StyledSquare)`
   cursor: pointer;
 `
 SquarePlayable.defaultName = 'SquarePlayable'
@@ -38,16 +39,26 @@ export default function Square ({
   player
 }) {
   if (isUndefined(isWinningSquare)) {
-    return isUndefined(player)
-      ? <SquarePlayable index={index} onClick={handleClick} />
-      : <SquarePlayed index={index} player={player}>{player}</SquarePlayed>
+    return isUndefined(player) ? (
+      <SquarePlayable index={index} onClick={handleClick} />
+    ) : (
+      <SquarePlayed index={index} player={player}>
+        {player}
+      </SquarePlayed>
+    )
   }
 
   if (isUndefined(player)) {
     return <StyledSquare index={index} />
   }
 
-  return isWinningSquare
-    ? <SquarePlayed index={index} player={player}>{player}</SquarePlayed>
-    : <SquareLost index={index} player={player}>{player}</SquareLost>
+  return isWinningSquare ? (
+    <SquarePlayed index={index} player={player}>
+      {player}
+    </SquarePlayed>
+  ) : (
+    <SquareLost index={index} player={player}>
+      {player}
+    </SquareLost>
+  )
 }

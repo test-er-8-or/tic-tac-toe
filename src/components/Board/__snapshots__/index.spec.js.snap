@@ -1,9 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`components:Board renders the Board with the proper styles 1`] = `
-.c0 {
-  -webkit-align-self: center;
-  -ms-flex-item-align: center;
+<StyledComponent
+  forwardedClass={
+    Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "attrs": undefined,
+      "componentStyle": ComponentStyle {
+        "componentId": "sc-bdVaJa",
+        "isStatic": true,
+        "rules": Array [
+          "
   align-self: center;
   display: grid;
   grid-area: board;
@@ -15,9 +22,18 @@ exports[`components:Board renders the Board with the proper styles 1`] = `
   justify-self: center;
   margin: auto;
   width: 60vh;
-}
-
-<div
-  className="c0"
+",
+        ],
+      },
+      "defaultName": "Board",
+      "displayName": "styled.div",
+      "render": [Function],
+      "styledComponentId": "sc-bdVaJa",
+      "target": "div",
+      "warnTooManyClasses": [Function],
+      "withComponent": [Function],
+    }
+  }
+  forwardedRef={null}
 />
 `;

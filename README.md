@@ -39,8 +39,7 @@ import configureMockStore from 'redux-mock-store'
 import { createEpicMiddleware } from 'redux-observable'
 
 import checkForWinEpic from './'
-import { gameOver, squareClicked } from '../../actions'
-import { getMoves } from '../../selectors'
+import { getMoves, gameOver, squareClicked } from '../..'
 import { getBoard, getWins } from '../../../utilities'
 
 jest.mock('../../actions', () => ({
@@ -88,7 +87,7 @@ jest.mock('../../../utilities', () => ({
     .mockReturnValue(['x', 'o', 'x', 'o', 'x', 'o', 'x', 'o', 'x']), // Double win [0, 1, 2, 5, 8, 7, 6, 3, 4]
   getWins: jest
     .fn()
-    .mockReturnValueOnce() // Check but no win
+    .mockReturnValueOnce([]) // Check but no win
     .mockReturnValueOnce([[0, 4, 8]]) // Check and win
     .mockReturnValueOnce([]) // Check and tie
     .mockReturnValue([[0, 4, 8], [2, 4, 6]]) // Check and win
@@ -97,8 +96,9 @@ jest.mock('../../../utilities', () => ({
 describe('epics', function () {
   describe('checkForWin', function () {
     it(`checks for and responds to wins correctly`, function () {
-      const epicMiddleware = createEpicMiddleware(checkForWinEpic)
+      const epicMiddleware = createEpicMiddleware()
       const store = configureMockStore([epicMiddleware])({})
+      epicMiddleware.run(checkForWinEpic)
       const action = squareClicked()
 
       store.dispatch(action)
@@ -109,7 +109,6 @@ describe('epics', function () {
       store.dispatch(action)
 
       expect(gameOver.mock.calls).toEqual([
-        [[0, 4, 8, 2, 6], 'x'],
         [[0, 4, 8], 'x'],
         [[]],
         [[0, 4, 8, 2, 6], 'x']
@@ -118,7 +117,6 @@ describe('epics', function () {
         action,
         action,
         action,
-        gameOver(),
         action,
         gameOver(),
         action,
@@ -126,8 +124,6 @@ describe('epics', function () {
         action,
         gameOver()
       ])
-
-      epicMiddleware.replaceEpic(checkForWinEpic)
     })
   })
 })
@@ -144,8 +140,7 @@ Instead of using our real store, we'll use `redux-mock-store` to mock out our st
 
 ```javascript
 import checkForWinEpic from './'
-import { gameOver, squareClicked } from '../../actions'
-import { getMoves } from '../../selectors'
+import { getMoves, gameOver, SQUARE_CLICKED } from '../..'
 import { getBoard, getWins } from '../../../utilities'
 ```
 
@@ -208,34 +203,39 @@ Redux-observable epics receive a _stream_ of Redux actions. The epic can do noth
 
 At this point the Epic middleware will be called with the same action and the _new_ state. This is the perfect time for us to check whether that move was a winning move, no? In our epic, we'll filter out any actions _other than_ `SQUARE_CLICKED` actions. After each `SQUARE_CLICKED` action, however, we'll run our `getWins` utility function on the `moves` array and see if there are any winning patterns. If there is one (or more) winning pattern, then we'll inject a _new_ action into the stream of actions&mdash;a `GAME_OVER` action. We've already written that action, and updated the reducer to handle it, and even written our selector to get the game state out of our application state. All we need is the trigger.
 
-So, first, the epic will receive as arguments the "stream" of actions, which will indicate with a dollar sign (\$) instead of an s&mdash;`action$`, and the store, which we'll need to retrieve the updated `moves` array. Then we'll use redux-observable's `ofType` method to filter our actions so that only the ones we want get through (those of type `SQUARE_CLICKED`). Then we'll use the `mergeMap` method from Rx.js to apply a function to each action as it comes in&mdash;just like the regular `map` function.
+So, first, the epic will receive as arguments the "stream" of actions, which will indicate with a dollar sign (\$) instead of an s&mdash;`action$`, and a similar stream of redux states, `state$`, which we'll need to retrieve the updated `moves` array. We'll be applying several operations to the stream, to connect these all together we will use the `pipe` method to create a 'pipe' for the stream of actions and states to go through. First in line we'll use redux-observable's `ofType` function to filter our actions so that only the ones we want get through (those of type `SQUARE_CLICKED`). The next in line, `withLatestFrom`, is used to allow us access to the latest contents of the `state$` stream as well as `actions$`. Then we'll use the `mergeMap` method from Rx.js to apply a function to each action as it comes in&mdash;just like the regular `map` function.
 
 For now we'll pass it an anonymous function that takes the action and just returns an empty "Observable".
 
-What is this Observable? An Observable is simply an object (provided by Rx.js), that wraps another object and gives it super powers. For example, the previously mentioned `ofType` method, which knows to look for the `type` key in the action and retrieve its value, then pass only those actions that match the passed-in value (`SQUARE_CLICKED`). The Redux observable middleware uses Rx.js to wrap each action in an Rx.js Observable before passing it in to our epic, and we must return an Observable-wrapped action back out. We'll use Rx.js's `Observable.of` method to do that.
+What is this Observable? An Observable is simply an object (provided by Rx.js), that wraps another object and gives it super powers. For example, the previously mentioned `ofType` function, which knows to look for the `type` key in the action and retrieve its value, then pass only those actions that match the passed-in value (`SQUARE_CLICKED`). The Redux observable middleware uses Rx.js to wrap each action in an Rx.js Observable before passing it in to our epic, and we must return an Observable-wrapped action back out. We'll use Rx.js's `of` function to do that.
 
-So in the code below, every time an action is passed to the reducer, _after_ it goes through the reducer it is wrapped in an Observable superpower cloak and passed to our epic along with the store (from which we can get the current state). The `ofType` method checks that the type of the object matches `SQUARE_CLICKED`. If it does, it passes it along to the `mergeMap` method which applies a function to it and then returns a _new_ Observable-wrapped action to the reducer.
+So in the code below, every time an action is passed to the reducer, _after_ it goes through the reducer it is wrapped in an Observable superpower cloak and passed to our epic along with the store (from which we can get the current state). The `ofType` function checks that the type of the object matches `SQUARE_CLICKED`. If it does, it passes it along to `mergeMap` which applies a function to it and then returns a _new_ Observable-wrapped action to the reducer.
 
 You can probably see a potential problem here. Once we pass a new action back to the reducer, won't _action_ also end up back in our epic after going through the reducer? Yes, it will, which means we could chain epics if we wanted to. _But it also means that if we pass the **original** action out of our epic, we'll create an **infinite loop**. As exciting as that sounds, it's actually pretty boring as everything stops working. Then kaboom. Try it if you don't believe it. Just make sure you're heavily insured and standing a safe distance from your laptop!
 
 ```javascript
 // src/state/epics/checkForWin/index.js
-import { Observable } from 'rxjs/Observable'
-import 'rxjs/add/operator/mergeMap'
-import 'rxjs/add/observable/of'
+import { of } from 'rxjs'
+import { mergeMap, withLatestFrom } from 'rxjs/operators'
+import { ofType } from 'redux-observable'
 
 import { SQUARE_CLICKED } from '../..'
 
-export default function checkForWinEpic (action$, store) {
-  return action$.ofType(SQUARE_CLICKED).mergeMap((action => Observable.of())
+export default function checkForWinEpic (action$, state$) {
+  return action$.pipe(
+    ofType(SQUARE_CLICKED),
+    withLatestFrom(state$),
+    mergeMap(([action, state]) => Observable.of())
+  )
 }
 ```
 
 So again:
 
 * `action$` is a stream of actions coming to our epic after they've passed through the reducer and done whatever it is they are wont to do to our application state
-* `store` is our store, from which we can get the new state
+* `state$` is a similar stream of redux states after each action has passed through the reducer
 * `ofType` tests each action against an action type we pass in (here it's `SQUARE_CLICKED`) and only passes the Observable-wrapped action on if its type matches
+* `withLatestFrom` grabs the latest value of the state stream and passes it on to the next in the pipe alongside the action
 * `mergeMap` maps the action by taking the function we pass in and applying it to each action in the stream as it arrives, and it takes the Observable we pass back out (here an Observable of nothing) and sends it around again to run through the reducer just like any other action (redux-observable strips the Observable back off of it first)
 
 So now in the function we're passing to `mergeMap` we need to decide whether or not to pass a _new_ action back to the reducer. If the game has not yet been won (or ended in a tie), then we'll pass an empty Observable. But if the game is over, then we'll create a `GAME_OVER` action, wrap it in an Observable, and pass that back to update our state.
@@ -244,45 +244,49 @@ For this, we'll need to import our `getMoves` selector to retrieve the moves fro
 
 ```javascript
 // src/state/epics/checkForWin/index.js
-import { Observable } from 'rxjs/Observable'
-import 'rxjs/add/operator/mergeMap'
-import 'rxjs/add/observable/of'
+import { of } from 'rxjs'
+import { mergeMap, withLatestFrom } from 'rxjs/operators'
+import { ofType } from 'redux-observable'
 import { head, length, union } from 'ramda'
 import { isNonEmptyArray } from 'ramda-adjunct'
 
 import { getMoves, gameOver, SQUARE_CLICKED } from '../..'
 import { getBoard, getWins } from '../../../utilities'
 
-export default function checkForWinEpic (action$, store) {
-  return action$.ofType(SQUARE_CLICKED).mergeMap(({ payload }) => {
-    const moves = getMoves(store.getState()) // get the moves array from the store
-    const plays = length(moves) // length of the moves array tells us how many plays
+export default function checkForWinEpic (action$, state$) {
+  return action$.pipe(
+    ofType(SQUARE_CLICKED),
+    withLatestFrom(state$),
+    mergeMap(([{ payload }, state]) => {
+      const moves = getMoves(state) // get the moves array from the state
+      const plays = length(moves) // length of the moves array tells us how many plays
 
-    if (plays < 5) {
-      // do nothing - can't win with fewer than five plays
-    }
+      if (plays < 5) {
+        // do nothing - can't win with fewer than five plays
+      }
 
-    const board = getBoard(moves) // convert the moves array to a board array
-    const wins = getWins(board)   // get zero or more winning patterns
+      const board = getBoard(moves) // convert the moves array to a board array
+      const wins = getWins(board)   // get zero or more winning patterns
 
-    if (isNonEmptyArray(wins)) {  // found at least one winning pattern!
-      // game over! somebody won
-      // return a wrapped gameOver action with the winning squares and the player
-    }
+      if (isNonEmptyArray(wins)) {  // found at least one winning pattern!
+        // game over! somebody won
+        // return a wrapped gameOver action with the winning squares and the player
+      }
 
-    if (plays > 8) { // no more squares to play
-      // game over! (it's a tie)
-      // return a wrapped empty gameOver action to indicate a tie
-    }
+      if (plays > 8) { // no more squares to play
+        // game over! (it's a tie)
+        // return a wrapped empty gameOver action to indicate a tie
+      }
 
-    // do nothing (none of the above conditions met)
-  })
+      // do nothing (none of the above conditions met)
+    })
+  )
 }
 ```
 
-Make sure you understand what each line above is doing. Now let's fill in the rest. For fewer than five moves or none of the conditions met, we can simply return an empty Observable: `return Observable.of()`.
+Make sure you understand what each line above is doing. Now let's fill in the rest. For fewer than five moves or none of the conditions met, we can simply return an empty Observable: `return of()`.
 
-For more than eight plays, the board is full and we can return a wrapped and empty `gameOver` action: `return Observable.of(gameOver())`.
+For more than eight plays, the board is full and we can return a wrapped and empty `gameOver` action: `return of(gameOver())`.
 
 The real work is done when we have a non-empty array of wins. That means _somebody won_. **Remember, the wins array is an _array of arrays_, where each inner array is a winning pattern. So we need to flatten out this array to get our winning squares. In other words, if we have one winning pattern&mdash;`[[0, 4, 8]]`&mdash;then we just want to return that inner array. But if we have _two_ winning patterns, we want to return a single array of all the winning squares without any duplicates, and as the most moves any player can make is five, there will always be a duplicate square.
 
@@ -290,44 +294,48 @@ There are many ways to go about this. Your author likes set theory, so he prefer
 
 So if the length of the `wins` array is less than two, we can simply use `head` to grab the first element in the array (there is only one) and return that. If there are two wining patterns, we'll pass them both as arguments to `union` using the spread operator (`...`) to spread the two arrays into two arguments, and we'll get back the set of moves with duplicates removed. For example, if the `wins` array is `[[0, 4, 8], [2, 4, 6]]` (a big X for "X") then the spread operator means we call `union([0, 4, 8], [2, 4, 6])` and the output will be exactly what we want: `[0, 2, 4, 6, 8]`.
 
-We can then figure out which player won by checking the first square of our winning pattern against the board we created. Is it an X or an O? We then return a wrapped `gameOver` action with the correct data: `return Observable.of(gameOver(squares, player))`. Here's what our final `checkForWinEpic` looks like.
+We can then figure out which player won by checking the first square of our winning pattern against the board we created. Is it an X or an O? We then return a wrapped `gameOver` action with the correct data: `return of(gameOver(squares, player))`. Here's what our final `checkForWinEpic` looks like.
 
 ```javascript
 // src/state/epics/checkForWin/index.js
-import { Observable } from 'rxjs/Observable'
-import 'rxjs/add/operator/mergeMap'
-import 'rxjs/add/observable/of'
+import { of } from 'rxjs'
+import { mergeMap, withLatestFrom } from 'rxjs/operators'
+import { ofType } from 'redux-observable'
 import { head, length, union } from 'ramda'
 import { isNonEmptyArray } from 'ramda-adjunct'
 
 import { getMoves, gameOver, SQUARE_CLICKED } from '../..'
 import { getBoard, getWins } from '../../../utilities'
 
-export default function checkForWinEpic (action$, store) {
-  return action$.ofType(SQUARE_CLICKED).mergeMap(({ payload }) => {
-    const moves = getMoves(store.getState())
-    const plays = length(moves)
+export default function checkForWinEpic (action$, state$) {
+  return action$.pipe(
+    ofType(SQUARE_CLICKED),
+    withLatestFrom(state$),
+    mergeMap(([{ payload }, state]) => {
+      const moves = getMoves(state)
+      const plays = length(moves)
 
-    if (plays < 5) {
-      return Observable.of()
-    }
+      if (plays < 5) {
+        return of()
+      }
 
-    const board = getBoard(moves)
-    const wins = getWins(board)
+      const board = getBoard(moves)
+      const wins = getWins(board)
 
-    if (isNonEmptyArray(wins)) {
-      const squares = length(wins) < 2 ? head(wins) : union(...wins)
-      const player = board[head(squares)]
+      if (isNonEmptyArray(wins)) {
+        const squares = length(wins) < 2 ? head(wins) : union(...wins)
+        const player = board[head(squares)]
 
-      return Observable.of(gameOver(squares, player))
-    }
+        return of(gameOver(squares, player))
+      }
 
-    if (plays > 8) {
-      return Observable.of(gameOver([]))
-    }
+      if (plays > 8) {
+        return of(gameOver([]))
+      }
 
-    return Observable.of()
-  })
+      return of()
+    })
+  )
 }
 ```
 
@@ -344,12 +352,14 @@ import { createEpicMiddleware } from 'redux-observable'
 import { rootReducer as reducer } from '..'
 import { checkForWinEpic } from '../epics'
 
-const epicMiddleware = createEpicMiddleware(checkForWinEpic)
+const epicMiddleware = createEpicMiddleware()
 const baseMiddleware = applyMiddleware(epicMiddleware)
 const middleware = composeWithDevTools(baseMiddleware)
 
 export default function configureStore () {
-  return createStore(reducer, middleware)
+  const store = createStore(reducer, middleware)
+  epicMiddleware.run(checkForWinEpic)
+  return store
 }
 ```
 

@@ -5,10 +5,12 @@ import { createEpicMiddleware } from 'redux-observable'
 import { rootReducer as reducer } from '..'
 import { checkForWinEpic } from '../epics'
 
-const epicMiddleware = createEpicMiddleware(checkForWinEpic)
+const epicMiddleware = createEpicMiddleware()
 const baseMiddleware = applyMiddleware(epicMiddleware)
 const middleware = composeWithDevTools(baseMiddleware)
 
 export default function configureStore () {
-  return createStore(reducer, middleware)
+  const store = createStore(reducer, middleware)
+  epicMiddleware.run(checkForWinEpic)
+  return store
 }
