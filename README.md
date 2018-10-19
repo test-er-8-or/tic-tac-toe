@@ -233,9 +233,9 @@ export default function checkForWinEpic (action$, state$) {
 So again:
 
 * `action$` is a stream of actions coming to our epic after they've passed through the reducer and done whatever it is they are wont to do to our application state
-* `state$` is a similar stream of redux states as determined after the action has passed through the reducer
+* `state$` is a similar stream of redux states after each action has passed through the reducer
 * `ofType` tests each action against an action type we pass in (here it's `SQUARE_CLICKED`) and only passes the Observable-wrapped action on if its type matches
-* `withLatestFrom` provides a quick way to access the latest value of the state stream
+* `withLatestFrom` grabs the latest value of the state stream and passes it on to the next in the pipe alongside the action
 * `mergeMap` maps the action by taking the function we pass in and applying it to each action in the stream as it arrives, and it takes the Observable we pass back out (here an Observable of nothing) and sends it around again to run through the reducer just like any other action (redux-observable strips the Observable back off of it first)
 
 So now in the function we're passing to `mergeMap` we need to decide whether or not to pass a _new_ action back to the reducer. If the game has not yet been won (or ended in a tie), then we'll pass an empty Observable. But if the game is over, then we'll create a `GAME_OVER` action, wrap it in an Observable, and pass that back to update our state.
