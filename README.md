@@ -87,7 +87,7 @@ jest.mock('../../../utilities', () => ({
     .mockReturnValue(['x', 'o', 'x', 'o', 'x', 'o', 'x', 'o', 'x']), // Double win [0, 1, 2, 5, 8, 7, 6, 3, 4]
   getWins: jest
     .fn()
-    .mockReturnValueOnce() // Check but no win
+    .mockReturnValueOnce([]) // Check but no win
     .mockReturnValueOnce([[0, 4, 8]]) // Check and win
     .mockReturnValueOnce([]) // Check and tie
     .mockReturnValue([[0, 4, 8], [2, 4, 6]]) // Check and win
